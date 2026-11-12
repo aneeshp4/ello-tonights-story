@@ -18,13 +18,36 @@ const andika = Andika({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ello-tonights-story.onrender.com";
+const TITLE = "Tonight's Story by Ello";
+const DESCRIPTION =
+  "A free bedtime story about the thing your kid loves, written at exactly their reading level so they can read it themselves. From Ello, the AI reading teacher for ages 5–9.";
+
 export const metadata: Metadata = {
-  title: "Tonight's Story · Ello",
-  description:
-    "A decodable bedtime story about your kid's favorite thing, at their reading level. From Ello, the AI reading teacher for kids 5–9.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: TITLE, template: "%s · Tonight's Story by Ello" },
+  description: DESCRIPTION,
+  applicationName: TITLE,
+  openGraph: {
+    type: "website",
+    siteName: TITLE,
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "/",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  formatDetection: { telephone: false, email: false, address: false },
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: "#E5FFFD",
 };
 
