@@ -24,8 +24,10 @@ This is a lead gen web tool for **Ello**, an AI reading teacher for kids aged 5�
 
 ### Privacy rules (non-negotiable)
 - We never ask for a child's full name, photo, school or date of birth.
-- The **hero name** stays in the browser and in the generation request. It is **never stored**. Before stories are saved, the name is replaced with the `{{hero}}` token. Share links show the `fun_name` instead.
-- A lead record holds only `email, age_band, reading_stage, interest, story_id, variant, session_id, referrer, utm, consent`.
+- The **hero name** is a first name or nickname (≤16 chars). It goes to the generation request, but **stories never store it**: before a story is saved, the name is replaced with the `{{hero}}` token, and share links show the `fun_name` instead.
+- The hero name is stored **only on the lead**, and only when the parent gives their email, so Chapter 2 emails can use it (`leads.hero_name`). `/api/lead` validates it with the same guard as `/api/story` (length, letters, profanity) and stores `null` if it fails. It is **never logged** (lead insert errors log only the status code).
+- Copy must stay honest about this: no "stays on your device" claims. Landing: "First name or nickname only. We never ask for a full name, photo or school." `/make` step 1: "First name or nickname. We use it in the story, and in Chapter 2 if you sign up."
+- A lead record holds only `email, hero_name, age_band, reading_stage, interest, story_id, variant, session_id, referrer, utm, consent`.
 - Use demo data only while building ("Mo", "Captain Pickle"), never real kids.
 
 ---
@@ -36,9 +38,9 @@ This is a lead gen web tool for **Ello**, an AI reading teacher for kids aged 5�
 |---|---|
 | Repo | `github.com/aneeshp4/ello-tonights-story`, public |
 | Hosting | Render web service `srv-dbqmoq0ae00c738sk0rg`, https://ello-tonights-story.onrender.com, region virginia, **free plan** (switch to Starter before submitting so it doesn't cold-start). Auto-deploys on every push to `main`. Created through the API, **not** Blueprint-synced, so `render.yaml` is documentation only. Change env vars through the Render API or the dashboard. |
-| Supabase | Project `jrvyzxfbinniltwiyndz` (us-east-1), linked. CLI: `npx supabase …` (v3.1.0). `leads`, `events` and `funnel` are migrated. **`stories` table not yet created.** |
+| Supabase | Project `jrvyzxfbinniltwiyndz` (us-east-1), linked. CLI: `npx supabase …` (v3.1.0; `db push --remote`). `leads` (incl. `hero_name`), `events`, `funnel` and `stories` are migrated. |
 | Brand | Ello tokens in `app/globals.css`, `styles/ello.css` and the Tailwind v4 theme. Classes include `.ello-card`, `.ello-chip`, `.ello-story`, `font-story`, `text-h1`… The source is the Ello Figma (brand pages 34–53). |
-| App | Only a style-check skeleton so far: `app/page.tsx`, `app/interest-chips.tsx`. |
+| App | All 4 build PRs are merged: landing, `/make`, streaming reader + ask sheet + done/share, `/s`, `/print`, email previews, `/api/story` (OpenRouter + decodable check + Jev), `/api/lead`, `/api/events`, A/B proxy. The Render service is live and auto-deploys `main`. |
 | Models | Benchmarked; see §6. |
 
 ---
@@ -98,14 +100,14 @@ The design is mobile first (about 393px), with large type and one main action pe
 
 | # | Route / state | Contents | Events |
 |---|---|---|---|
-| 0 | `/` | Headline (A/B), subhead, sample story card, CTA "Make tonight's story", "From Ello" line | `landing_viewed`, `cta_clicked` |
-| 1 | `/make` step 1 | "Who's the hero?": name input (12 chars max) + "🎲 Pick a fun name", age chips `4-5 · 6 · 7 · 8-9`, privacy note "Only used inside the story. We don't save it." | `step_viewed`, `fun_name_used`, `step_completed{step:1, age_band}` |
+| 0 | `/` | Headline (A/B), subhead, 3-page example book (swipe with scroll-snap, tap dots, ←/→ on desktop, arrow keys), CTA "Make tonight's story", privacy line, "From Ello" line | `landing_viewed`, `cta_clicked` |
+| 1 | `/make` step 1 | "Who's tonight's story about?": "Your reader's first name or nickname" (16 chars max, helper "They'll be the hero of the story.", placeholder "e.g. Mo") + "🎲 Use a silly name instead", privacy note "First name or nickname. We use it in the story, and in Chapter 2 if you sign up.", "How old is your reader?" (helper "So we pick words they can read.") with chips `4–5 · 6 · 7 · 8–9`. Later steps say the name, or "your reader" if none. | `step_viewed`, `fun_name_used`, `step_completed{step:1, age_band}` |
 | 2 | `/make` step 2 | 12 interest chips (dinosaurs, trucks, space, dogs, sharks, soccer, mermaids, robots, bugs, cooking, castles, unicorns) + free text (40 chars max) | `interest_selected{interest, custom}`, `input_rejected{field}` |
 | 3 | `/make` step 3 | "Which can {hero} read on their own? Tap the hardest one." Cards: `cat · sun`, `ship · frog`, `cake · rain`, `because · night`, plus chips "Not reading yet" and "Not sure" | `reading_check_completed{stage, source}`, `story_requested` |
 | — | loading | Yello + "Writing a {interest} story with words {hero} can sound out…" + reading tip. Waits **only for page 1**. | `page_ready{page:1,…}` |
-| 4 | `/story/[id]` | One page at a time: scene (CSS/emoji art from the `scene` key), big text, highlighted target-pattern words, parent tip, page dots, "Next page". If the next page isn't ready: Yello "turning the page…". Last page: "The End" + "How did {hero} do?" 😍 🙂 😕 | `story_page_viewed{page}`, `next_page_waited{page, wait_ms}`, `story_finished`, `kid_reaction_rated{score}`, `print_clicked` |
-| 5 | sheet on reader | "{hero}'s story isn't over": email input, "Send me Chapter 2", "Not now", "One story a night for 3 nights. Unsubscribe anytime." Variant `ask=end` shows it after the reaction rating; `ask=mid` shows it after page 2 as a gate ("Enter your email to finish the story"). | `email_ask_viewed{ask}`, `lead_submitted`, `email_ask_dismissed` |
-| 6 | reader, done state | "Chapter 2 arrives tomorrow at 7pm", share button (Web Share API with copy-link fallback) → `/s/{id}?ref={id}`, app card "Want Ello to listen while {hero} reads?" + "Get Ello free" (App Store link), "Make another story" | `share_clicked`, `app_cta_clicked`, `another_story_clicked` |
+| 4 | `/story/[id]` | A fixed full-height (`h-dvh`) column so nothing moves between pages: scene, a text box that fills the leftover space and scrolls inside itself (with a "more ↓" cue), a fixed-height parent-tip box, and a fixed-height controls row (page dots + "Next page"). If the next page isn't ready, the text box shows Yello "turning the page…" and the button stays put. **Last page:** the controls row turns into "The End. How did {hero} do?" 😍 🙂 😕 / Skip + "📬 Chapter 2 comes out tomorrow at 7pm". `story_finished` fires when the last page is reached. | `story_page_viewed{page}`, `next_page_waited{page, wait_ms}`, `story_finished`, `kid_reaction_rated{score}`, `print_clicked` |
+| 5 | sheet on the last page | Opens over the last page after the rating (or Skip). "{hero}'s story isn't over": "Chapter 2 arrives in your inbox tomorrow at 7pm, plus a printable copy", email input, "Send me Chapter 2", "Not now", "One story a night for 3 nights, starring {hero}. Unsubscribe anytime." The page behind is locked (`position: fixed` body), and the sheet fits the visual viewport so the keyboard can't cover the input. **The email ask only ever comes at the end of the story** (the mid-story gate is retired). | `email_ask_viewed{ask:'end'}`, `lead_submitted`, `email_ask_dismissed` |
+| 6 | reader, done state | "Not now" lands here: "Sweet dreams, {hero}! Chapter 2 comes out tomorrow at 7pm. Want it in your inbox?" + "Send me Chapter 2" (reopens the sheet). After signup: "Chapter 2 arrives tomorrow at 7pm". Share button (Web Share API with copy-link fallback) → `/s/{id}?ref={id}`, app card "Want Ello to listen while {hero} reads?" + "Get Ello free" (App Store link), "Make another story" | `share_clicked`, `app_cta_clicked`, `another_story_clicked` |
 | — | `/s/[id]` | Read-only story with `fun_name`, CTA → `/make?ref={id}` | `share_landing_viewed{ref}` |
 
 **Highlighting:** client-side, highlight words that match the stage's *target* pattern (e.g. stage 2 → `sh|ch|th|wh|ck` or an initial/final blend). Theme words (§7) get a different highlight with the tip "Help with: dinosaur".
@@ -205,7 +207,8 @@ Response: `Content-Type: application/x-ndjson`, streamed. The client parses it l
 **Targets:** page 1 p50 < 3s and p90 < 6s; generation stays ahead of a reading kid.
 
 ## 9. `POST /api/lead`
-Request: `{ email, story_id, session_id, variant, age_band, stage, interest, consent, ref, utm, website /*honeypot*/ }`
+Request: `{ email, story_id, session_id, variant, age_band, stage, interest, consent, hero?, ref, utm, website /*honeypot*/ }`
+- `hero` (optional): checked with `checkHero()` from `lib/safety/input.ts`; stored as `leads.hero_name`, or `null` if it fails. Never logged.
 - `email`: trim, lowercase, ≤254 chars, simple RFC-ish regex. Rate limit 5/IP/hour. If the honeypot is filled, return 200 and drop the request.
 - Insert into `leads`. Return `{ ok, lead_id }`.
 - **Email sending is mocked.** `/preview/email/{lead_id}/{1..4}` renders the 4 sequence emails from the lead and the story (D0 printable link, D1 chapter 2 teaser, D3 "Chapter 3 is waiting in Ello" with deep link `ello://story?interest=…&stage=…` → App Store fallback, D6 reading-stage summary). In production this payload would go to Customer.io or Resend.
@@ -223,11 +226,12 @@ Every event carries `session_id`, `variant`, `ref` and `utm_*`.
 
 Both tables have RLS on and **no policies**. Only the server, using the service role key, reads or writes.
 
-**`leads`** (exists): `id uuid pk, created_at, email, age_band, reading_stage, interest, story_id, variant, session_id, referrer, utm jsonb, consent bool`
+**`leads`** (exists): `id uuid pk, created_at, email, hero_name text null (≤16 chars, check constraint; migration 20261112020000), age_band, reading_stage, interest, story_id, variant, session_id, referrer, utm jsonb, consent bool`
+**`stories`** (exists): see the migration below.
 **`events`** (exists): `id bigint identity, created_at, session_id, name, variant, path, props jsonb`
 **`funnel`** view (exists): distinct sessions per `(variant, name)`.
 
-**New migration to write** (`supabase/migrations/<ts>_stories.sql`):
+**Stories migration** (applied, `supabase/migrations/20261112010000_stories.sql`):
 ```sql
 -- age bands: align with UI (4-5, 6, 7, 8-9)
 alter table public.leads drop constraint if exists leads_age_band_check;
@@ -259,10 +263,12 @@ Apply with `npx supabase db push`. The project is already linked.
 ---
 
 ## 12. A/B testing
-`lib/variant.ts` runs on first visit (proxy/middleware; check the Next 16 docs for the current API). It assigns a cookie `ello_v` = `{ask: 'end'|'mid', h: 'a'|'b'}` with 50/50 splits. URL params `?ask=` and `?h=` override it and are saved. The variant goes on every event and on the lead.
-- **Headline a:** "A story your kid can read by themselves. About the thing they love."
-- **Headline b:** "Turn their obsession into reading practice."
-- **First test:** `ask`, because it targets the riskiest link. Read `lead_submitted / story_page_viewed{page:1}` per arm, and check `kid_reaction_rated` as the guardrail.
+`lib/variant.ts` runs on first visit (`proxy.ts`). It assigns a cookie `ello_v` = `{ask: 'end', h: 'a'|'b'}`, 50/50 on `h`. URL param `?h=` overrides it and is saved. The variant goes on every event and on the lead.
+- **Live test: the headline (`h`).**
+  - **Headline a:** "A story your kid can read by themselves. About the thing they love."
+  - **Headline b:** "Turn their obsession into reading practice."
+  - Read `lead_submitted / story_page_viewed{page:1}` per arm, and check `kid_reaction_rated` as the guardrail (`docs/funnel.sql`).
+- **Ask placement test: retired.** The email ask only comes at the end of the story. User feedback: the mid-story gate interrupted the story, and "Not now" let people skip it anyway. `ask` stays in the cookie and contract for compatibility: old `mid` cookies and `?ask=mid` normalise to `end`, and `/api/story` forces `end`. In `funnel.sql` the ask breakdown is now a single `end` row (older sessions may still show `mid`).
 
 ---
 

@@ -6,6 +6,9 @@
 -- (see variantText() in lib/supabase.ts); we parse it to (ask, h).
 -- A session's arm = its FIRST event's variant (assignment is sticky via the
 -- ello_v cookie; a later ?ask= override would otherwise split a session).
+-- The ask-placement test is retired: new sessions are always ask='end', so the
+-- live comparison is the headline (h). Sessions from before the change may still
+-- show ask='mid'; filter on created_at if you want only the current flow.
 
 -- ============================================================================
 -- 1) Main funnel per variant (ask x h)
