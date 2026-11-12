@@ -6,9 +6,17 @@ services:
     buildCommand: npm ci && npm run build
     startCommand: npm start
     envVars:
-      - key: ANTHROPIC_API_KEY
-        sync: false
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: STORY_MODEL
+        value: google/gemini-3.1-flash-lite
+      - key: STORY_MODEL_FALLBACK
+        value: deepseek/deepseek-v4.1-flash
+      - key: SAFETY_MODEL
+        value: typesafe/jev-1.14
+      - key: SAFETY_MODEL_FALLBACK
+        value: google/gemini-3.1-flash-lite

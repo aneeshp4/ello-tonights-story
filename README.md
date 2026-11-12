@@ -6,7 +6,7 @@ Lead gen prototype for Ello: a decodable, printable story about your kid's obses
 
 ```bash
 npm install
-cp .env.example .env.local   # add ANTHROPIC_API_KEY
+cp .env.example .env.local   # add OPENROUTER_API_KEY + Supabase keys
 npm run dev                  # http://localhost:3000
 ```
 
