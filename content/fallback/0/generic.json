@@ -1,0 +1,31 @@
+{
+  "title": "{{hero}} and the Red Leaf",
+  "theme_words": [],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} loves the park. The sun is warm and bright.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} wants to find the very best red leaf.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "Whoosh! The wind blows {{hero}}'s red leaf up high.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "A friendly bird brings it back to {{hero}}. Thank you!",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "{{hero}} tucks the leaf in bed. But where did the bird go?",
+      "scene": "bedroom"
+    }
+  ]
+}

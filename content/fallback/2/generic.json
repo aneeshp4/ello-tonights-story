@@ -1,0 +1,31 @@
+{
+  "title": "{{hero}} and the Big Shell",
+  "theme_words": [],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} and Dad sit on the sand. The sun is hot. {{hero}} can swim and splash. Splish, splash! {{hero}} has a pink net.",
+      "scene": "water"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} spots a big shell in the sand. It is pink with a black spot. {{hero}} wants to get the shell for Mom.",
+      "scene": "water"
+    },
+    {
+      "n": 3,
+      "text": "But the shell is stuck in a crack in a rock. {{hero}} tugs and tugs, but it will not lift.",
+      "scene": "water"
+    },
+    {
+      "n": 4,
+      "text": "Dad has a plan. Dad and {{hero}} dig in the sand. Dig, dig, dig! The shell pops up. {{hero}} grins.",
+      "scene": "water"
+    },
+    {
+      "n": 5,
+      "text": "At dusk, {{hero}} is in bed with the shell. {{hero}} hugs Mom. But then the shell went tick, tick, tick! What is in the shell?",
+      "scene": "bedroom"
+    }
+  ]
+}

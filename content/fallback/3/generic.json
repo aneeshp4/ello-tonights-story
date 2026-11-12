@@ -1,0 +1,31 @@
+{
+  "title": "{{hero}} and the Red Kite",
+  "theme_words": [],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} lives by a big green hill. Each day, {{hero}} likes to play in the sun. Today {{hero}} has a red kite with a long tail. {{hero}} can not wait to see it go up!",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} runs up the hill with Dad. The wind is strong. {{hero}} wants the kite to go up, up, up, as high as the trees. Dad helps with the string, and {{hero}} runs fast.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "Then the wind stops. The kite drops down and gets stuck in a tree! {{hero}} feels sad. The kite is so high that {{hero}} can not reach it.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "Dad lifts {{hero}} up on his back. {{hero}} stretches and reaches. Got it! {{hero}} and Dad smile. Then the wind picks up, and the kite sails high in the sky.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "That night, {{hero}} lays the kite by the bed. The moon is bright. {{hero}} feels snug and safe. But what is that note on the tail of the kite?",
+      "scene": "bedroom"
+    }
+  ]
+}

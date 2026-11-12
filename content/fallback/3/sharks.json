@@ -1,0 +1,33 @@
+{
+  "title": "{{hero}} and Fin the Shark",
+  "theme_words": [
+    "shark"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} lives by the sea. Each day, {{hero}} swims with a kind shark named Fin. Fin is gray, with a big fin and a sweet smile. Fin likes to play tag in the waves with {{hero}}.",
+      "scene": "water"
+    },
+    {
+      "n": 2,
+      "text": "Today, Fin wants to take {{hero}} to see the sea snails at the reef. {{hero}} grabs a mask and swims along with Fin. The sun shines on the waves, and the water is clear.",
+      "scene": "water"
+    },
+    {
+      "n": 3,
+      "text": "But a big wave stirs up the sand. {{hero}} can not see the reef, and Fin can not see the snails. The sea is just a gray blur. Which way is the reef?",
+      "scene": "water"
+    },
+    {
+      "n": 4,
+      "text": "Fin waits for the sand to sink. Then Fin leads the way, nice and slow. At last, the reef shines in the sun, and {{hero}} sees ten pink snails! {{hero}} and Fin smile.",
+      "scene": "water"
+    },
+    {
+      "n": 5,
+      "text": "That night, {{hero}} lies in bed and thinks of Fin. The waves are soft and slow. But on the sill sits a shell that was not there at sunset. Did Fin leave it?",
+      "scene": "bedroom"
+    }
+  ]
+}

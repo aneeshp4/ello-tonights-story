@@ -1,0 +1,31 @@
+{
+  "title": "{{hero}} and the Pup",
+  "theme_words": [],
+  "pages": [
+    {
+      "n": 1,
+      "text": "The sun is hot. {{hero}} has a big red hat. {{hero}} and Mom sit on a log in the sun. It is fun!",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} can see a tan pup. The pup is in the mud. Can {{hero}} get the pup to sit on the rug?",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "The pup did not sit. The pup got the red hat! The pup ran and ran. {{hero}} ran to the pup, but the pup hid in a box.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "{{hero}} sat on the rug. {{hero}} set a bun on the mat. The pup got up and sat. {{hero}} got the hat, and the pup got a pat!",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "The sun is set. {{hero}} and the pup get in bed. Mom has a hug for {{hero}}. But the pup dug up a tin box. What is in it?",
+      "scene": "bedroom"
+    }
+  ]
+}

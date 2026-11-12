@@ -1,0 +1,33 @@
+{
+  "title": "{{hero}} and the Glowing Stone",
+  "theme_words": [
+    "rocket"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} likes to gaze up at the night sky and dream of space. One day, a white rocket lands at the gate with a note: \"Hop in, {{hero}}!\" So {{hero}} hops in and sits down.",
+      "scene": "outdoors-night"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} hits the green switch, and the rocket blasts up, up, up into space. The land and sea get small and then smaller. {{hero}} wants to land on a pale gray rock and bring home a stone.",
+      "scene": "space"
+    },
+    {
+      "n": 3,
+      "text": "But the gray rock is all dust. {{hero}} digs and digs, but there is not a stone in sight. {{hero}} sits down with a sigh. Maybe there are no stones at all.",
+      "scene": "space"
+    },
+    {
+      "n": 4,
+      "text": "Then {{hero}} spots a gleam in the dust. It is a stone that shines like a light! {{hero}} picks it up, packs it in the ship, and blasts back home just in time for bed.",
+      "scene": "space"
+    },
+    {
+      "n": 5,
+      "text": "That night, {{hero}} sets the stone by the bed and drifts to sleep. The stone glows a soft white. But late at night, the stone hums a tune. What is the stone trying to say?",
+      "scene": "bedroom"
+    }
+  ]
+}

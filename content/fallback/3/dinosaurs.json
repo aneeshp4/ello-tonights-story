@@ -1,0 +1,33 @@
+{
+  "title": "{{hero}} and Pip the Dinosaur",
+  "theme_words": [
+    "dinosaur"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} lives by a deep green lake, and a kind dinosaur named Pip likes to play there. Pip is tall, with a long neck and spots on the tail. Each day, {{hero}} and Pip play tag by the lake.",
+      "scene": "forest"
+    },
+    {
+      "n": 2,
+      "text": "One day, {{hero}} sees a tree with sweet green leaves high up at the top. {{hero}} wants to pick the leaves to make a snack for Pip. But the tree is so tall, and the leaves are way up high.",
+      "scene": "forest"
+    },
+    {
+      "n": 3,
+      "text": "{{hero}} jumps and jumps, but the leaves stay high. {{hero}} stands on a big stone and reaches. Still, the leaves are way up at the top. {{hero}} sits down on the grass with a sigh.",
+      "scene": "forest"
+    },
+    {
+      "n": 4,
+      "text": "Then Pip comes by and sees the tree. Pip stretches that long neck up and picks the leaves with ease. Pip drops a big pile next to {{hero}}. They eat the sweet snack in the shade.",
+      "scene": "forest"
+    },
+    {
+      "n": 5,
+      "text": "When the sun sets, {{hero}} waves to Pip and heads home to bed. {{hero}} feels snug and safe. But that night, {{hero}} sees a soft light by the lake. Is it Pip? What is it?",
+      "scene": "bedroom"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "title": "{{hero}} and the Shark",
+  "theme_words": [
+    "shark",
+    "ocean"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} is in the ocean. {{hero}} has a pal. The pal is a shark! It is big and tan, and it is fun.",
+      "scene": "water"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} and the shark go to a big pit. A red gem is in the pit! Can {{hero}} get it for Mom?",
+      "scene": "water"
+    },
+    {
+      "n": 3,
+      "text": "But the gem is in a tin can. The lid is on. {{hero}} tugs and tugs, but the lid is set. It did not pop.",
+      "scene": "water"
+    },
+    {
+      "n": 4,
+      "text": "The shark hits the lid. Bam! The lid pops up! {{hero}} gets the gem. {{hero}} and the shark did it. Yes!",
+      "scene": "water"
+    },
+    {
+      "n": 5,
+      "text": "{{hero}} is in bed. Mom has a hug for {{hero}}. But the gem has a dot on it. The dot is a map! What is on the map?",
+      "scene": "bedroom"
+    }
+  ]
+}

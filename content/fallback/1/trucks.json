@@ -1,0 +1,33 @@
+{
+  "title": "{{hero}} and the Big Truck",
+  "theme_words": [
+    "truck"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} has a big red truck. It can go up and up. {{hero}} and Dad sit in it. Zip, zip! It is fun.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} and Dad have a job. The job is to get ten big bags to Gus. Gus is at his hut.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "But the mud is wet. The big truck sat in the mud. It can not go! {{hero}} and Dad tug and tug.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "{{hero}} gets ten logs. {{hero}} sets the logs in the mud. The truck gets on the logs. It can go! Gus gets his bags.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "The sun is set. {{hero}} is in bed. Mom and Dad hug {{hero}}. But Gus has a box for {{hero}}. What is in the box?",
+      "scene": "bedroom"
+    }
+  ]
+}

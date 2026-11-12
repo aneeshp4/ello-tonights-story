@@ -1,0 +1,33 @@
+{
+  "title": "{{hero}} and the Green Dump Truck",
+  "theme_words": [
+    "digger"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} likes big trucks best of all. Each day, {{hero}} rides in a green dump truck with Jake. Jake is kind, and he lets {{hero}} ring the bell. Ding, ding! The truck is huge and fast.",
+      "scene": "city"
+    },
+    {
+      "n": 2,
+      "text": "Today, Jake and {{hero}} have a big job. They need to take a load of stones to the lake, so the kids can make a safe path to the beach by the end of the day.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "On the way, it rains and rains. The road gets wet and muddy, and the big truck slides and gets stuck. The wheels spin, but the truck will not go. {{hero}} feels a bit sad.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "Then {{hero}} spots a digger at the side of the road. The digger gives the truck a big push, and the truck rolls free. Jake and {{hero}} wave and shout, \"Thank you!\"",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "At last, the stones are at the lake, and the kids make the path. That night, {{hero}} sleeps and dreams of trucks. But Jake said, \"Next time, we will take the truck to a place no one has seen.\" What will they find?",
+      "scene": "bedroom"
+    }
+  ]
+}
