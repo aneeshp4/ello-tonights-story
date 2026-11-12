@@ -49,7 +49,7 @@ function put(s: LiveStory) {
   emit();
 }
 
-// ---- sessionStorage (browser only; hero name never leaves the device) -------
+// ---- sessionStorage (hero name for reloads; stories are saved with {{hero}}) --
 export const heroKey = (id: string) => `ello_hero_${id}`;
 const cacheKey = (id: string) => `ello_story_${id}`;
 

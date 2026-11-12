@@ -7,7 +7,7 @@ import { Yello } from "./Scene";
 // Placeholder: App Store search for Ello until we have the real listing link.
 export const APP_STORE_URL = "https://apps.apple.com/us/search?term=ello%20reading";
 
-export function DonePanel({ id, hero, leadDone }: { id: string; hero: string; leadDone: boolean }) {
+export function DonePanel({ id, hero, leadDone, onAsk }: { id: string; hero: string; leadDone: boolean; onAsk?: () => void }) {
   const [copied, setCopied] = useState(false);
 
   async function share() {
@@ -44,7 +44,10 @@ export function DonePanel({ id, hero, leadDone }: { id: string; hero: string; le
         ) : (
           <>
             <h2 className="text-h3">Sweet dreams, {hero}!</h2>
-            <p className="text-body text-ink">Great reading tonight.</p>
+            <p className="text-body text-ink">Great reading tonight. <strong>Chapter 2 comes out tomorrow at 7pm.</strong> Want it in your inbox?</p>
+            {onAsk && (
+              <button type="button" className="ello-btn" onClick={onAsk}>Send me Chapter 2</button>
+            )}
           </>
         )}
         <Link href={`/print/${id}`} className="text-body font-semibold text-teal-dark underline underline-offset-4"

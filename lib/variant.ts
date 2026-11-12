@@ -10,8 +10,10 @@ export const VARIANT_MAX_AGE = 60 * 60 * 24 * 90; // 90 days
 export const ATTR_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 export const DEFAULT_VARIANT: Variant = { ask: "end", h: "a" };
 
+// The ask-placement test is retired: the email ask always comes at the end of the story.
+// Old "mid" cookies/URLs normalise to "end" so existing visitors keep their headline arm.
 export function parseAsk(v: string | null | undefined): AskVariant | null {
-  return v === "end" || v === "mid" ? v : null;
+  return v === "end" || v === "mid" ? "end" : null;
 }
 export function parseHeadline(v: string | null | undefined): HeadlineVariant | null {
   return v === "a" || v === "b" ? v : null;
@@ -39,7 +41,7 @@ export function serializeVariant(v: Variant): string {
 
 /** 50/50 on each axis, independently. */
 export function randomVariant(rand: () => number = Math.random): Variant {
-  return { ask: rand() < 0.5 ? "end" : "mid", h: rand() < 0.5 ? "a" : "b" };
+  return { ask: "end", h: rand() < 0.5 ? "a" : "b" };
 }
 
 /** Apply ?ask= / ?h= overrides on top of a base variant. */

@@ -48,7 +48,7 @@ function MakeFlow() {
     lastViewed.current = step;
   }, [step]);
 
-  const heroName = cleanHero(hero) || "your kid";
+  const heroName = cleanHero(hero) || "your reader";
   const interestText = chip ? INTERESTS.find((i) => i.id === chip)!.label.toLowerCase() : custom.trim();
 
   function reject(field: "hero" | "interest", reason: string, server = false) {
@@ -186,21 +186,23 @@ function MakeFlow() {
 
       {step === 1 && (
         <form className="flex flex-col gap-5" onSubmit={(e) => { e.preventDefault(); next1(); }}>
-          <h1 className="text-h1">Who&apos;s the hero?</h1>
+          <h1 className="text-h3 sm:text-h1">Who&apos;s tonight&apos;s story about?</h1>
           <div className="flex flex-col gap-2">
-            <label htmlFor="hero" className="text-body font-bold">Story name</label>
+            <label htmlFor="hero" className="text-body font-bold">Your reader&apos;s first name or nickname</label>
+            <p id="hero-help" className="-mt-1 text-body-s text-ink">They&apos;ll be the hero of the story.</p>
             <input id="hero" className="ello-input" value={hero} maxLength={16} autoComplete="off" autoCapitalize="words"
-              placeholder="Mo" aria-invalid={!!error} aria-describedby="hero-note"
+              placeholder="e.g. Mo" aria-invalid={!!error} aria-describedby="hero-help hero-note"
               onChange={(e) => { setHero(e.target.value); setHeroIsFun(false); setError(null); }} />
-            <button type="button" className="ello-chip self-start" onClick={pickFun}>🎲 Pick a fun name</button>
-            <p id="hero-note" className="text-body-s text-ink">🔒 Only used inside the story. We don&apos;t save it.</p>
+            <button type="button" className="ello-chip self-start" onClick={pickFun}>🎲 Use a silly name instead</button>
+            <p id="hero-note" className="text-body-s text-ink">🔒 First name or nickname. We use it in the story, and in Chapter 2 if you sign up.</p>
           </div>
-          <fieldset className="flex flex-col gap-2">
-            <legend className="mb-2 text-body font-bold">How old?</legend>
+          <fieldset className="flex flex-col gap-2" aria-describedby="age-help">
+            <legend className="text-body font-bold">How old is your reader?</legend>
+            <p id="age-help" className="-mt-1 mb-1 text-body-s text-ink">So we pick words they can read.</p>
             <div className="grid grid-cols-4 gap-2">
               {AGE_BANDS.map((a) => (
                 <button key={a} type="button" className="ello-chip min-h-12 px-2 text-center" aria-pressed={age === a}
-                  onClick={() => { setAge(a); setError(null); }}>{a}</button>
+                  onClick={() => { setAge(a); setError(null); }}>{a.replace("-", "–")}</button>
               ))}
             </div>
           </fieldset>

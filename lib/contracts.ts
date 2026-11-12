@@ -34,7 +34,7 @@ export interface Variant { ask: AskVariant; h: HeadlineVariant }
 
 // ---- POST /api/story --------------------------------------------------------
 export interface StoryRequest {
-  hero: string;              // 1-12 chars, never stored server-side
+  hero: string;              // 1-16 chars; never stored with the story (replaced by {{hero}}). Only a lead can store it (LeadRequest.hero)
   fun_name: string;          // shown on share links
   age_band: AgeBand;
   interest: string;          // chip id or custom text (<=40 chars)
@@ -83,6 +83,7 @@ export interface LeadRequest {
   stage: Stage | null;
   interest: string | null;
   consent: boolean;
+  hero?: string | null;      // first name/nickname, <=16 chars. Stored on the lead ONLY (for Chapter 2 emails); never logged
   ref?: string | null;
   utm?: Record<string, string>;
   website?: string;          // honeypot, must be empty

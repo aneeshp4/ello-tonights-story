@@ -25,6 +25,7 @@ export interface LeadRow {
   referrer: string | null;
   utm: Record<string, string>;
   consent: boolean;
+  hero_name: string | null; // first name/nickname for Chapter 2 emails; never logged
 }
 
 export async function insertLead(row: Omit<LeadRow, "id" | "created_at">): Promise<string> {
