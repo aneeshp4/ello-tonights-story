@@ -1,0 +1,116 @@
+@import "tailwindcss";
+/* Brand values (--ello-*), base styles (@layer base) and .ello-* component
+   classes (@layer components). This file is the single source of truth for
+   brand values; the @theme block below only maps them to Tailwind names. */
+@import "../styles/ello.css";
+
+/*
+ * Ello tokens → Tailwind v4 theme.
+ * `inline` makes utilities reference var(--ello-*) directly, so changing a
+ * value in styles/ello.css updates both the .ello-* classes and utilities.
+ *
+ * The default Tailwind color palette is cleared so only brand colors exist
+ * (e.g. `gray-*` is the 5-step brand gray, not Tailwind's 11-step gray).
+ */
+@theme inline {
+  --color-*: initial;
+  --color-white: var(--ello-white);
+  --color-black: #000;
+
+  --color-ink-darker: var(--ello-ink-darker);
+  --color-ink-dark: var(--ello-ink-dark);
+  --color-ink: var(--ello-ink);
+  --color-ink-light: var(--ello-ink-light);
+  --color-ink-lighter: var(--ello-ink-lighter);
+
+  --color-teal-darker: var(--ello-teal-darker);
+  --color-teal-dark: var(--ello-teal-dark);
+  --color-teal: var(--ello-teal);
+  --color-teal-light: var(--ello-teal-light);
+  --color-teal-lighter: var(--ello-teal-lighter);
+
+  --color-cyan-darker: var(--ello-cyan-darker);
+  --color-cyan-dark: var(--ello-cyan-dark);
+  --color-cyan: var(--ello-cyan);
+  --color-cyan-light: var(--ello-cyan-light);
+  --color-cyan-lighter: var(--ello-cyan-lighter);
+
+  /* brand "Yellow" */
+  --color-sun-darker: var(--ello-yellow-darker);
+  --color-sun-dark: var(--ello-yellow-dark);
+  --color-sun: var(--ello-yellow);
+  --color-sun-light: var(--ello-yellow-light);
+  --color-sun-lighter: var(--ello-yellow-lighter);
+
+  /* brand "Red" */
+  --color-coral-darker: var(--ello-red-darker);
+  --color-coral-dark: var(--ello-red-dark);
+  --color-coral: var(--ello-red);
+  --color-coral-light: var(--ello-red-light);
+  --color-coral-lighter: var(--ello-red-lighter);
+
+  /* brand "Blue" */
+  --color-sky-darker: var(--ello-blue-darker);
+  --color-sky-dark: var(--ello-blue-dark);
+  --color-sky: var(--ello-blue);
+  --color-sky-light: var(--ello-blue-light);
+  --color-sky-lighter: var(--ello-blue-lighter);
+
+  /* brand "Purple" */
+  --color-grape-darker: var(--ello-purple-darker);
+  --color-grape-dark: var(--ello-purple-dark);
+  --color-grape: var(--ello-purple);
+  --color-grape-light: var(--ello-purple-light);
+  --color-grape-lighter: var(--ello-purple-lighter);
+
+  --color-gray-800: var(--ello-gray-800);
+  --color-gray-700: var(--ello-gray-700);
+  --color-gray-500: var(--ello-gray-500);
+  --color-gray-300: var(--ello-gray-300);
+  --color-gray-200: var(--ello-gray-200);
+
+  --color-pastel-cyan: var(--ello-bg-cyan);
+  --color-pastel-teal: var(--ello-bg-teal);
+  --color-pastel-blue: var(--ello-bg-blue);
+  --color-pastel-ink: var(--ello-bg-ink);
+  --color-pastel-yellow: var(--ello-bg-yellow);
+  --color-pastel-red: var(--ello-bg-red);
+  --color-pastel-purple: var(--ello-bg-purple);
+  --color-pastel-gray: var(--ello-bg-gray);
+
+  /* Fonts (next/font sets --font-nunito / --font-andika on <html>) */
+  --font-sans: var(--ello-font);
+  --font-story: var(--ello-font-story);
+
+  /* Type scale (APP scale from Figma; mirrors the --ello-h1… shorthands) */
+  --text-h1: 2.5rem;
+  --text-h1--line-height: 1.28;
+  --text-h1--letter-spacing: -1px;
+  --text-h1--font-weight: 600;
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.4;
+  --text-h3--font-weight: 600;
+  --text-button: 1.5rem;
+  --text-button--line-height: 1;
+  --text-button--font-weight: 600;
+  --text-input: 1.25rem;
+  --text-input--line-height: 1;
+  --text-input--font-weight: 550;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-body--font-weight: 450;
+  --text-body-s: 0.8125rem;
+  --text-body-s--line-height: 1.6;
+  --text-body-s--font-weight: 450;
+  --text-story: 1.625rem;
+  --text-story--line-height: 1.8;
+  --text-story--letter-spacing: 0.02em;
+
+  /* Shape */
+  --radius-ello-sm: var(--ello-radius-sm);
+  --radius-ello: var(--ello-radius);
+  --radius-ello-lg: var(--ello-radius-lg);
+  --shadow-press: var(--ello-shadow-press);
+  --shadow-press-light: var(--ello-shadow-press-light);
+  --shadow-card: var(--ello-shadow-card);
+}

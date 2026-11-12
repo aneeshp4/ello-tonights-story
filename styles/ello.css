@@ -2,10 +2,16 @@
  * Ello brand tokens — extracted from the Figma "Master" page
  * (Product Design Test Assignment assets, pages 34–37 + app screens).
  *
+ * SINGLE SOURCE OF TRUTH for brand values. app/globals.css maps these --ello-*
+ * variables onto Tailwind v4 theme tokens (bg-teal, text-ink-dark, rounded-ello-lg…).
+ *
  * Font: brand uses "Wallop" (commercial, not on Google Fonts). We fall back to
  * Nunito for UI and Andika (designed for early readers: single-story a/g) for story text.
- * Load in <head>:
- *   https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Andika:wght@400;700&display=swap
+ * Both are self-hosted via next/font in app/layout.tsx, which exposes them as
+ * --font-nunito / --font-andika.
+ *
+ * Base styles live in @layer base and components in @layer components so that
+ * Tailwind utilities (which live in @layer utilities) can always override them.
  */
 
 :root {
@@ -72,8 +78,8 @@
   --ello-bg-gray: #f6f8f8;
 
   /* ── Type (APP scale from Figma) ───────── */
-  --ello-font: "Wallop", "Nunito", ui-rounded, system-ui, sans-serif;
-  --ello-font-story: "Andika", "Nunito", system-ui, sans-serif;
+  --ello-font: "Wallop", var(--font-nunito, "Nunito"), ui-rounded, system-ui, sans-serif;
+  --ello-font-story: var(--font-andika, "Andika"), var(--font-nunito, "Nunito"), system-ui, sans-serif;
 
   --ello-h1: 600 2.5rem/1.28 var(--ello-font);        /* 40px, -1px tracking */
   --ello-h3: 600 1.5rem/1.4 var(--ello-font);         /* 24px subhead */
@@ -88,63 +94,70 @@
   --ello-radius-lg: 32px;
   --ello-radius-pill: 999px;
   --ello-shadow-press: 0 4px 0 var(--ello-teal-dark);  /* chunky "pressable" button edge */
+  --ello-shadow-press-light: 0 4px 0 var(--ello-teal-lighter);
+  --ello-shadow-card: 0 2px 0 var(--ello-ink-lighter);
 }
 
-/* ── Base ─────────────────────────────────── */
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  font: var(--ello-body);
-  color: var(--ello-ink-dark);
-  background: var(--ello-bg-cyan);
-}
-h1 { font: var(--ello-h1); letter-spacing: -1px; margin: 0 0 .5em; }
-h2, h3 { font: var(--ello-h3); margin: 0 0 .5em; }
 
-/* ── Components ───────────────────────────── */
-.ello-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-  font: var(--ello-button); font-size: 1.25rem;
-  color: var(--ello-white); background: var(--ello-teal);
-  border: 0; border-radius: var(--ello-radius-pill);
-  padding: 1rem 1.75rem; min-height: 56px; width: 100%;
-  box-shadow: var(--ello-shadow-press); cursor: pointer;
-  transition: transform .08s, box-shadow .08s;
-}
-.ello-btn:active { transform: translateY(4px); box-shadow: none; }
-.ello-btn:disabled { background: var(--ello-gray-300); box-shadow: 0 4px 0 var(--ello-gray-500); cursor: not-allowed; }
-.ello-btn--secondary {
-  color: var(--ello-teal); background: var(--ello-white);
-  box-shadow: inset 0 0 0 2px var(--ello-teal-lighter), 0 4px 0 var(--ello-teal-lighter);
+@layer base {
+  /* ── Base ─────────────────────────────────── */
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font: var(--ello-body);
+    color: var(--ello-ink-dark);
+    background: var(--ello-bg-cyan);
+  }
+  h1 { font: var(--ello-h1); letter-spacing: -1px; margin: 0 0 .5em; }
+  h2, h3 { font: var(--ello-h3); margin: 0 0 .5em; }
 }
 
-.ello-card {
-  background: var(--ello-white);
-  border-radius: var(--ello-radius-lg);
-  padding: 1.5rem;
-  box-shadow: 0 2px 0 var(--ello-ink-lighter);
-}
+@layer components {
+  /* ── Components ───────────────────────────── */
+  .ello-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    font: var(--ello-button); font-size: 1.25rem;
+    color: var(--ello-white); background: var(--ello-teal);
+    border: 0; border-radius: var(--ello-radius-pill);
+    padding: 1rem 1.75rem; min-height: 56px; width: 100%;
+    box-shadow: var(--ello-shadow-press); cursor: pointer;
+    transition: transform .08s, box-shadow .08s;
+  }
+  .ello-btn:active { transform: translateY(4px); box-shadow: none; }
+  .ello-btn:disabled { background: var(--ello-gray-300); box-shadow: 0 4px 0 var(--ello-gray-500); cursor: not-allowed; }
+  .ello-btn--secondary {
+    color: var(--ello-teal); background: var(--ello-white);
+    box-shadow: inset 0 0 0 2px var(--ello-teal-lighter), var(--ello-shadow-press-light);
+  }
 
-.ello-input {
-  font: var(--ello-input); color: var(--ello-ink-dark);
-  width: 100%; box-sizing: border-box;
-  padding: 1rem 1.25rem; min-height: 56px;
-  border: 2px solid var(--ello-ink-lighter); border-radius: var(--ello-radius);
-  background: var(--ello-white); outline: none;
-}
-.ello-input:focus { border-color: var(--ello-cyan); }
+  .ello-card {
+    background: var(--ello-white);
+    border-radius: var(--ello-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--ello-shadow-card);
+  }
 
-.ello-chip {
-  font: 600 1rem/1 var(--ello-font);
-  padding: .75rem 1rem; border-radius: var(--ello-radius-pill);
-  border: 2px solid var(--ello-ink-lighter); background: var(--ello-white);
-  color: var(--ello-ink-dark); cursor: pointer;
-}
-.ello-chip[aria-pressed="true"] { border-color: var(--ello-teal); background: var(--ello-bg-teal); color: var(--ello-teal-darker); }
+  .ello-input {
+    font: var(--ello-input); color: var(--ello-ink-dark);
+    width: 100%; box-sizing: border-box;
+    padding: 1rem 1.25rem; min-height: 56px;
+    border: 2px solid var(--ello-ink-lighter); border-radius: var(--ello-radius);
+    background: var(--ello-white); outline: none;
+  }
+  .ello-input:focus { border-color: var(--ello-cyan); }
 
-/* Story page: big, airy, early-reader friendly */
-.ello-story {
-  font-family: var(--ello-font-story);
-  font-size: 1.625rem; line-height: 1.8; letter-spacing: .02em;
-  color: var(--ello-gray-800);
+  .ello-chip {
+    font: 600 1rem/1 var(--ello-font);
+    padding: .75rem 1rem; border-radius: var(--ello-radius-pill);
+    border: 2px solid var(--ello-ink-lighter); background: var(--ello-white);
+    color: var(--ello-ink-dark); cursor: pointer;
+  }
+  .ello-chip[aria-pressed="true"] { border-color: var(--ello-teal); background: var(--ello-bg-teal); color: var(--ello-teal-darker); }
+
+  /* Story page: big, airy, early-reader friendly */
+  .ello-story {
+    font-family: var(--ello-font-story);
+    font-size: 1.625rem; line-height: 1.8; letter-spacing: .02em;
+    color: var(--ello-gray-800);
+  }
 }
