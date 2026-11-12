@@ -1,0 +1,150 @@
+/*
+ * Ello brand tokens — extracted from the Figma "Master" page
+ * (Product Design Test Assignment assets, pages 34–37 + app screens).
+ *
+ * Font: brand uses "Wallop" (commercial, not on Google Fonts). We fall back to
+ * Nunito for UI and Andika (designed for early readers: single-story a/g) for story text.
+ * Load in <head>:
+ *   https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Andika:wght@400;700&display=swap
+ */
+
+:root {
+  /* ── Primary ───────────────────────────── */
+  --ello-ink-darker: #0f3a4d;
+  --ello-ink-dark: #175773;     /* primary text */
+  --ello-ink: #6b8b99;
+  --ello-ink-light: #a3c0cc;
+  --ello-ink-lighter: #deebf1;
+
+  --ello-teal-darker: #075948;
+  --ello-teal-dark: #008071;
+  --ello-teal: #07a180;         /* primary buttons */
+  --ello-teal-light: #0ad3a1;
+  --ello-teal-lighter: #75f0c0;
+
+  --ello-cyan-darker: #00a7a7;
+  --ello-cyan-dark: #00c6c3;
+  --ello-cyan: #24d9d9;
+  --ello-cyan-light: #47f0ea;
+  --ello-cyan-lighter: #90fff8;
+
+  --ello-yellow-darker: #b85900;
+  --ello-yellow-dark: #ff6f00;
+  --ello-yellow: #ffa100;
+  --ello-yellow-light: #ffc800;
+  --ello-yellow-lighter: #ffdd00;
+
+  --ello-red-darker: #800600;
+  --ello-red-dark: #de0700;
+  --ello-red: #ff562b;
+  --ello-red-light: #ff8d8d;
+  --ello-red-lighter: #ffb5b2;
+
+  /* ── Secondary ─────────────────────────── */
+  --ello-blue-darker: #0f02a0;
+  --ello-blue-dark: #4c93ff;
+  --ello-blue: #3dc1ff;
+  --ello-blue-light: #72dcff;
+  --ello-blue-lighter: #9cf0ff;
+
+  --ello-purple-darker: #4d0076;
+  --ello-purple-dark: #9b00ee;
+  --ello-purple: #d256ff;
+  --ello-purple-light: #f09bff;
+  --ello-purple-lighter: #facaff;
+
+  /* ── Grayscale ─────────────────────────── */
+  --ello-gray-800: #2c3232;
+  --ello-gray-700: #647070;
+  --ello-gray-500: #9da9aa;
+  --ello-gray-300: #c6cdcd;
+  --ello-gray-200: #c5cece;     /* "Black 40" */
+  --ello-white: #ffffff;
+
+  /* ── Pastel backgrounds ────────────────── */
+  --ello-bg-cyan: #e5fffd;
+  --ello-bg-teal: #e6fff1;
+  --ello-bg-blue: #cffafa;
+  --ello-bg-ink: #f3f9fb;
+  --ello-bg-yellow: #fbf9f3;
+  --ello-bg-red: #fbf5f3;
+  --ello-bg-purple: #fcf5ff;
+  --ello-bg-gray: #f6f8f8;
+
+  /* ── Type (APP scale from Figma) ───────── */
+  --ello-font: "Wallop", "Nunito", ui-rounded, system-ui, sans-serif;
+  --ello-font-story: "Andika", "Nunito", system-ui, sans-serif;
+
+  --ello-h1: 600 2.5rem/1.28 var(--ello-font);        /* 40px, -1px tracking */
+  --ello-h3: 600 1.5rem/1.4 var(--ello-font);         /* 24px subhead */
+  --ello-button: 600 1.5rem/1 var(--ello-font);       /* 24px */
+  --ello-input: 550 1.25rem/1 var(--ello-font);       /* 20px */
+  --ello-body: 450 1rem/1.6 var(--ello-font);         /* 16px */
+  --ello-body-s: 450 0.8125rem/1.6 var(--ello-font);  /* 13px */
+
+  /* ── Shape ─────────────────────────────── */
+  --ello-radius-sm: 12px;
+  --ello-radius: 20px;
+  --ello-radius-lg: 32px;
+  --ello-radius-pill: 999px;
+  --ello-shadow-press: 0 4px 0 var(--ello-teal-dark);  /* chunky "pressable" button edge */
+}
+
+/* ── Base ─────────────────────────────────── */
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font: var(--ello-body);
+  color: var(--ello-ink-dark);
+  background: var(--ello-bg-cyan);
+}
+h1 { font: var(--ello-h1); letter-spacing: -1px; margin: 0 0 .5em; }
+h2, h3 { font: var(--ello-h3); margin: 0 0 .5em; }
+
+/* ── Components ───────────────────────────── */
+.ello-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  font: var(--ello-button); font-size: 1.25rem;
+  color: var(--ello-white); background: var(--ello-teal);
+  border: 0; border-radius: var(--ello-radius-pill);
+  padding: 1rem 1.75rem; min-height: 56px; width: 100%;
+  box-shadow: var(--ello-shadow-press); cursor: pointer;
+  transition: transform .08s, box-shadow .08s;
+}
+.ello-btn:active { transform: translateY(4px); box-shadow: none; }
+.ello-btn:disabled { background: var(--ello-gray-300); box-shadow: 0 4px 0 var(--ello-gray-500); cursor: not-allowed; }
+.ello-btn--secondary {
+  color: var(--ello-teal); background: var(--ello-white);
+  box-shadow: inset 0 0 0 2px var(--ello-teal-lighter), 0 4px 0 var(--ello-teal-lighter);
+}
+
+.ello-card {
+  background: var(--ello-white);
+  border-radius: var(--ello-radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 2px 0 var(--ello-ink-lighter);
+}
+
+.ello-input {
+  font: var(--ello-input); color: var(--ello-ink-dark);
+  width: 100%; box-sizing: border-box;
+  padding: 1rem 1.25rem; min-height: 56px;
+  border: 2px solid var(--ello-ink-lighter); border-radius: var(--ello-radius);
+  background: var(--ello-white); outline: none;
+}
+.ello-input:focus { border-color: var(--ello-cyan); }
+
+.ello-chip {
+  font: 600 1rem/1 var(--ello-font);
+  padding: .75rem 1rem; border-radius: var(--ello-radius-pill);
+  border: 2px solid var(--ello-ink-lighter); background: var(--ello-white);
+  color: var(--ello-ink-dark); cursor: pointer;
+}
+.ello-chip[aria-pressed="true"] { border-color: var(--ello-teal); background: var(--ello-bg-teal); color: var(--ello-teal-darker); }
+
+/* Story page: big, airy, early-reader friendly */
+.ello-story {
+  font-family: var(--ello-font-story);
+  font-size: 1.625rem; line-height: 1.8; letter-spacing: .02em;
+  color: var(--ello-gray-800);
+}
