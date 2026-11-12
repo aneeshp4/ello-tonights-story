@@ -2,9 +2,8 @@
 -- Source: public.events (session_id, name, variant, path, props jsonb, created_at).
 -- Each step counts DISTINCT sessions. Change the date window in `params`.
 --
--- `events.variant` is text written by /api/events. We accept either the JSON
--- form '{"ask":"mid","h":"b"}' (what the client sends as EventsRequest.variant)
--- or a compact 'mid/b' / 'mid-b' form, and normalise to (ask, h).
+-- `events.variant` is text written by /api/events as 'ask=end,h=a'
+-- (see variantText() in lib/supabase.ts); we parse it to (ask, h).
 -- A session's arm = its FIRST event's variant (assignment is sticky via the
 -- ello_v cookie; a later ?ask= override would otherwise split a session).
 
@@ -16,10 +15,8 @@ with params as (
 ),
 ev as (
   select e.*,
-         case when e.variant like '{%' then (e.variant::jsonb ->> 'ask')
-              else split_part(replace(e.variant, '-', '/'), '/', 1) end as v_ask,
-         case when e.variant like '{%' then (e.variant::jsonb ->> 'h')
-              else split_part(replace(e.variant, '-', '/'), '/', 2) end as v_h
+         substring(e.variant from 'ask=([a-z]+)') as v_ask,
+         substring(e.variant from 'h=([a-z]+)') as v_h
   from public.events e, params p
   where e.created_at >= p.since
 ),
@@ -72,8 +69,7 @@ order by a.ask, a.h;
 -- ============================================================================
 with ev as (
   select e.*,
-         case when e.variant like '{%' then (e.variant::jsonb ->> 'ask')
-              else split_part(replace(e.variant, '-', '/'), '/', 1) end as v_ask
+         substring(e.variant from 'ask=([a-z]+)') as v_ask
   from public.events e
   where e.created_at >= now() - interval '14 days'
 ),
