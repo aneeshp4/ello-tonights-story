@@ -1,8 +1,13 @@
 // POST /api/story: generate a 5-page story and stream it as NDJSON (AGENT_PLAN.md §8).
 // Privacy: the real hero name is only used for generation and the wire. It is never persisted or logged;
 // stored pages/title use the {{hero}} token (redactHero), and logs carry no page text.
-import type { StoryPage, StreamMsg } from "@/lib/contracts";
+// Analytics (AGENT_PLAN.md §10): this route owns page_ready (every page), safety_check_failed and
+// server-side story_failed. They go to the console and to `events` via emit(); never with the hero name.
+import { after } from "next/server";
+import type { EventName, StoryPage, StreamMsg } from "@/lib/contracts";
+import { insertEvents } from "@/lib/db/events";
 import { createStory, updateStory } from "@/lib/db/stories";
+import { variantText } from "@/lib/supabase";
 import { clientIp, rateLimit } from "@/lib/ratelimit";
 import { guardStoryRequest } from "@/lib/safety/request";
 import { themeWordsFor } from "@/lib/story/decodable";
@@ -37,8 +42,22 @@ function log(evt: string, data: Record<string, unknown>) {
   console.log(JSON.stringify({ evt, ts: new Date().toISOString(), ...data }));
 }
 
+/**
+ * Insert one row into `events` without slowing the stream. The insert starts now and is passed to
+ * after() as a promise, so Next keeps it alive (waitUntil) without waiting for it. after(callback)
+ * would instead run only once the whole stream closes. insertEvents never throws; if after() has no
+ * request scope the promise simply runs fire-and-forget (the Node server is long-lived).
+ */
+function emit(session_id: string, variant: string | null, name: EventName, props: Record<string, unknown>) {
+  const p = insertEvents([{ session_id, name, variant, path: "/api/story", props }]);
+  try { after(p); } catch { /* outside a request scope: fire-and-forget */ }
+}
+
 export async function POST(req: Request): Promise<Response> {
   const ip = clientIp(req);
+  // 429 is logged by the client (story_failed{source:"client", reason:"rate_limited"}), not here: we return
+  // before reading the body, so there is no session_id yet, and a DB write per rejected request would let an
+  // abusive IP flood `events`.
   if (!rateLimit(`story:${ip}`, 10, 60 * 60 * 1000)) {
     return oneShot({ type: "error", message: "rate_limited" }, 429);
   }
@@ -58,6 +77,10 @@ export async function POST(req: Request): Promise<Response> {
   const themeWords = themeWordsFor(r.interest, r.stage, r.interest_custom);
   const titleToken = titleFor(r.interest, r.interest_custom);
   const t0 = Date.now();
+  const variant = variantText(r.variant);
+  const interestTag = r.interest_custom ? "custom" : r.interest;
+  const track = (name: EventName, props: Record<string, unknown>) =>
+    emit(r.session_id, variant, name, { story_id: id, stage: r.stage, interest: interestTag, ...(r.ref ? { ref: r.ref } : {}), ...props });
 
   const abort = new AbortController();
   req.signal.addEventListener("abort", () => abort.abort(), { once: true });
@@ -102,6 +125,13 @@ export async function POST(req: Request): Promise<Response> {
             offlist_count: meta.offlist.length, words: meta.words, model: meta.model, cost: meta.cost,
             reason: meta.reason ? redactHero(meta.reason, hero) : undefined,
           });
+          for (const f of meta.safety_failures) {
+            track("safety_check_failed", { page: page.n, category: f.category, ok: f.ok, model: f.model });
+          }
+          track("page_ready", {
+            page: page.n, latency_ms: meta.latency_ms, since_start_ms: Date.now() - t0, regenerated: meta.regenerated,
+            fallback: meta.fallback, safety_blocked: meta.safety_blocked, source: page.source, attempts: meta.attempts,
+          });
         }
         if (abort.signal.aborted) {
           save({ status: "failed" });
@@ -113,7 +143,10 @@ export async function POST(req: Request): Promise<Response> {
           log("story_done", { story_id: id, status, total_ms: Date.now() - t0 });
         }
       } catch (e) {
-        log("story_failed", { story_id: id, error: redactHero(String((e as Error)?.message ?? e), hero).slice(0, 200) });
+        const error = redactHero(String((e as Error)?.message ?? e), hero).slice(0, 200);
+        log("story_failed", { story_id: id, error });
+        // The client sees the {type:"error"} line below and does not log this failure again.
+        track("story_failed", { source: "server", reason: "generation_failed", error, pages: stored.length });
         save({ status: "failed" });
         send({ type: "error", message: "generation_failed" });
       } finally {

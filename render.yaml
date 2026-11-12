@@ -3,7 +3,7 @@ services:
     name: ello-tonights-story
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build
+    buildCommand: rm -rf .next && npm ci && npm run build
     startCommand: npm start
     envVars:
       - key: SUPABASE_URL
