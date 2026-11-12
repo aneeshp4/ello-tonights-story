@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { ELLO_TEAL, WORDMARK_PATHS, WORDMARK_RATIO, WORDMARK_VIEWBOX } from "@/components/brand/ElloWordmark";
 
 // Site-wide share card (also used for twitter:image via twitter-image.tsx).
 // Static: generated at build time. Uses the built-in font to stay dependency-free.
@@ -31,22 +32,22 @@ export default function Image() {
             Free · at exactly their reading level · ready in seconds
           </div>
         </div>
-        <div style={{ display: "flex", position: "relative", width: 280, height: 280 }}>
-          <div
-            style={{
-              width: 280,
-              height: 270,
-              background: "#ffc800",
-              borderRadius: "50% 50% 46% 46%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 56,
-            }}
-          >
-            <div style={{ width: 30, height: 42, borderRadius: "50%", background: "#0f3a4d" }} />
-            <div style={{ width: 30, height: 42, borderRadius: "50%", background: "#0f3a4d" }} />
-          </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 300,
+            height: 300,
+            borderRadius: 64,
+            background: ELLO_TEAL,
+          }}
+        >
+          <svg width={Math.round(150 * WORDMARK_RATIO)} height={150} viewBox={WORDMARK_VIEWBOX} fill="none">
+            {WORDMARK_PATHS.map((d, i) => (
+              <path key={i} d={d} fill="#ffffff" />
+            ))}
+          </svg>
         </div>
       </div>
     ),

@@ -69,6 +69,47 @@ export function readCache(id: string): LiveStory | null {
   } catch { return null; }
 }
 
+// ---- reader progress (per tab, per story) ---------------------------------------
+// Restores the reader after a reload: page, phase, rating, and which events already
+// fired, so a refresh doesn't restart at page 1 or re-show the email ask.
+// Never holds the hero name (that stays in ello_hero_{id}). sessionStorage is per tab,
+// so a new tab or a link from an email starts fresh at page 1.
+export interface ReaderProgress {
+  idx: number;
+  phase: "read" | "done";
+  rated: number | null;
+  askShown: boolean; // email_ask_viewed already fired for the sheet
+  inlineAskShown: boolean; // …and for the inline form on the done panel
+  leadDone: boolean;
+  seen: number[]; // pages already counted by story_page_viewed
+  finished: boolean; // story_finished already fired
+}
+const progressKey = (id: string) => `ello_progress_${id}`;
+
+export function readProgress(id: string): ReaderProgress | null {
+  try {
+    const raw = sessionStorage.getItem(progressKey(id));
+    if (!raw) return null;
+    const p = JSON.parse(raw) as Partial<ReaderProgress>;
+    return {
+      idx: Number.isInteger(p.idx) && p.idx! >= 0 && p.idx! < 20 ? p.idx! : 0,
+      phase: p.phase === "done" ? "done" : "read",
+      rated: typeof p.rated === "number" ? p.rated : null,
+      askShown: p.askShown === true,
+      inlineAskShown: p.inlineAskShown === true,
+      leadDone: p.leadDone === true,
+      seen: Array.isArray(p.seen) ? p.seen.filter((n): n is number => typeof n === "number") : [],
+      finished: p.finished === true,
+    };
+  } catch { return null; }
+}
+export function saveProgress(id: string, p: ReaderProgress): void {
+  try {
+    const { idx, phase, rated, askShown, inlineAskShown, leadDone, seen, finished } = p; // explicit fields only
+    sessionStorage.setItem(progressKey(id), JSON.stringify({ idx, phase, rated, askShown, inlineAskShown, leadDone, seen, finished }));
+  } catch { /* storage unavailable */ }
+}
+
 // ---- stream ------------------------------------------------------------------
 export interface StartHandlers {
   onStory: (id: string) => void;

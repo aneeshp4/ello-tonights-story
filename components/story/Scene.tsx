@@ -26,10 +26,10 @@ export function interestEmoji(interest: string): string {
   return INTEREST_EMOJI[interest] ?? "⭐";
 }
 
-export function Scene({ scene, interest, size = "md" }: { scene: SceneKey; interest: string; size?: "reader" | "sm" | "md" }) {
+export function Scene({ scene, interest, size = "md" }: { scene: SceneKey; interest: string; size?: "fill" | "sm" | "md" }) {
   const a = ART[scene] ?? ART["outdoors-day"];
-  // "reader": shorter on short phones (e.g. 375x667) so the page text gets the room.
-  const h = size === "reader" ? "h-32 [@media(max-height:720px)]:h-24" : size === "sm" ? "h-32" : "h-44";
+  // "fill": takes the height its parent gives it (the reader sizes it to the space left over).
+  const h = size === "fill" ? "h-full" : size === "sm" ? "h-32" : "h-44";
   return (
     <div
       className={`relative ${h} w-full overflow-hidden rounded-ello-lg select-none`}

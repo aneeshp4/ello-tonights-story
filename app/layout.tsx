@@ -21,7 +21,7 @@ const andika = Andika({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ello-tonights-story.onrender.com";
 const TITLE = "Tonight's Story by Ello";
 const DESCRIPTION =
-  "A free bedtime story about the thing your kid loves, written at exactly their reading level so they can read it themselves. From Ello, the AI reading teacher for ages 5–9.";
+  "A free bedtime story about the thing your kid loves, written at exactly their reading level so they can read it themselves. From Ello, the AI teacher for kids 5–9.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

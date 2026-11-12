@@ -1,13 +1,18 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/track";
+import { APP_STORE_URL } from "@/lib/links";
+import { EmailInput, Honeypot, type SubmitEmail, useEmailForm } from "./emailForm";
 import { Yello } from "./Scene";
 
-// Placeholder: App Store search for Ello until we have the real listing link.
-export const APP_STORE_URL = "https://apps.apple.com/us/search?term=ello%20reading";
-
-export function DonePanel({ id, hero, leadDone, onAsk }: { id: string; hero: string; leadDone: boolean; onAsk?: () => void }) {
+export function DonePanel({ id, hero, leadDone, onLead, onInlineShown }: {
+  id: string; hero: string; leadDone: boolean;
+  /** Inline email capture (same submit path as the ask sheet). Omit to hide the form. */
+  onLead?: SubmitEmail;
+  /** Called when the inline form is on screen (the caller fires email_ask_viewed once). */
+  onInlineShown?: () => void;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function share() {
@@ -45,9 +50,7 @@ export function DonePanel({ id, hero, leadDone, onAsk }: { id: string; hero: str
           <>
             <h2 className="text-h3">Sweet dreams, {hero}!</h2>
             <p className="text-body text-ink">Great reading tonight. <strong>Chapter 2 comes out tomorrow at 7pm.</strong> Want it in your inbox?</p>
-            {onAsk && (
-              <button type="button" className="ello-btn" onClick={onAsk}>Send me Chapter 2</button>
-            )}
+            {onLead && <InlineEmail onSubmit={onLead} onShown={onInlineShown} />}
           </>
         )}
         <Link href={`/print/${id}`} className="text-body font-semibold text-teal-dark underline underline-offset-4"
@@ -78,5 +81,33 @@ export function DonePanel({ id, hero, leadDone, onAsk }: { id: string; hero: str
         Make another story
       </Link>
     </div>
+  );
+}
+
+/** Inline version of the ask sheet's form, so "Not now" isn't a dead end. */
+function InlineEmail({ onSubmit, onShown }: { onSubmit: SubmitEmail; onShown?: () => void }) {
+  const form = useEmailForm(onSubmit);
+  const ref = useRef<HTMLFormElement>(null);
+  useEffect(() => { onShown?.(); }, [onShown]);
+
+  // Keep the field in view when the on-screen keyboard opens (and as it resizes).
+  function keepVisible() {
+    const el = ref.current;
+    if (!el) return;
+    const scroll = () => el.scrollIntoView({ block: "center", behavior: "smooth" });
+    setTimeout(scroll, 300);
+    const vv = window.visualViewport;
+    if (!vv) return;
+    vv.addEventListener("resize", scroll);
+    el.addEventListener("focusout", () => vv.removeEventListener("resize", scroll), { once: true });
+  }
+
+  return (
+    <form ref={ref} onSubmit={form.submit} className="relative flex w-full flex-col text-left">
+      <EmailInput form={form} id="done-email" errId="done-email-err" onFocus={keepVisible} />
+      <Honeypot form={form} />
+      <button type="submit" className="ello-btn mt-3" disabled={form.busy}>{form.busy ? "Sending…" : "Send me Chapter 2"}</button>
+      <p className="mt-2 text-center text-body-s text-ink">One story a night for 3 nights. Unsubscribe anytime.</p>
+    </form>
   );
 }
