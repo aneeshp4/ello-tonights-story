@@ -1,5 +1,6 @@
 import type { HeadlineVariant } from "@/lib/contracts";
 import { Yello } from "@/components/brand/Yello";
+import { ExampleStory } from "./ExampleStory";
 import { LandingViewed, MakeStoryCta } from "./LandingClient";
 
 // Screen 0 (AGENT_PLAN.md §5). Server component; the headline variant comes in as
@@ -72,8 +73,7 @@ export function Landing({ h }: { h: HeadlineVariant }) {
       <p className="mt-8 flex items-start gap-2 rounded-ello bg-pastel-teal p-4 text-body-s text-teal-darker">
         <span aria-hidden>🔒</span>
         <span>
-          We never ask for your child&apos;s full name, photo or school. The name in the story stays on
-          your device.
+          First name or nickname only. We never ask for a full name, photo or school.
         </span>
       </p>
 
@@ -86,39 +86,5 @@ export function Landing({ h }: { h: HeadlineVariant }) {
         <span>From Ello, the AI reading teacher for ages 5–9</span>
       </footer>
     </main>
-  );
-}
-
-function ExampleStory() {
-  // Stage 2 (digraphs/blends) sample. Target-pattern words are highlighted the way
-  // the reader does it.
-  const hl = "rounded-md bg-sun-lighter/60 px-0.5";
-  return (
-    <figure className="mt-6 overflow-hidden rounded-ello-lg bg-white shadow-card">
-      <div
-        aria-hidden
-        className="relative flex h-28 items-end justify-center bg-gradient-to-b from-sky-lighter to-pastel-cyan"
-      >
-        <span className="absolute left-6 top-4 text-3xl">☀️</span>
-        <div className="h-8 w-full rounded-t-[50%] bg-teal-lighter" />
-        <span className="absolute bottom-3 text-5xl">🚚</span>
-      </div>
-      <div className="p-5">
-        <p className="ello-story !text-[1.375rem]">
-          Mo has a big red <mark className={hl}>truck</mark>. Mo and the <mark className={hl}>truck</mark>{" "}
-          zip up the <mark className={hl}>hill</mark>. <mark className={hl}>Honk</mark>!{" "}
-          <mark className={hl}>Honk</mark>! At the top is a box. What is in
-          it?
-        </p>
-        <figcaption className="mt-3 flex items-center justify-between text-body-s text-ink">
-          <span>Example · for a 6-year-old who loves trucks</span>
-          <span aria-label="Page 1 of 5" className="flex gap-1">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === 0 ? "bg-teal" : "bg-ink-lighter"}`} />
-            ))}
-          </span>
-        </figcaption>
-      </div>
-    </figure>
   );
 }
