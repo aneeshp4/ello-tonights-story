@@ -74,7 +74,20 @@ export interface StartHandlers {
   onStory: (id: string) => void;
   onPage: (id: string, page: StoryPage, msSinceStart: number) => void;
   onRejected: (field: "hero" | "interest", suggestion?: string) => void;
-  onError: (message: string) => void;
+  /**
+   * source "server": the stream carried a {type:"error"} line; the server already logged story_failed.
+   * source "client": fetch/network error, non-OK status, or the stream ended without done/error; only
+   * the client knows, so it logs story_failed.
+   */
+  onError: (message: string, info: { source: "client" | "server"; story_id: string | null; pages: number }) => void;
+}
+
+// Time from request to page 1 (ms), reported once on the first story_page_viewed{page:1} (Reader).
+const ttfp = new Map<string, number>();
+export function takeTtfp(id: string): number | undefined {
+  const ms = ttfp.get(id);
+  ttfp.delete(id);
+  return ms;
 }
 
 async function openStream(req: StoryRequest): Promise<ReadableStream<Uint8Array>> {
@@ -93,6 +106,7 @@ async function openStream(req: StoryRequest): Promise<ReadableStream<Uint8Array>
 export async function startStory(req: StoryRequest, h: StartHandlers): Promise<void> {
   const t0 = performance.now();
   let id: string | null = null;
+  const info = (source: "client" | "server") => ({ source, story_id: id, pages: id ? stories.get(id)?.pages.length ?? 0 : 0 });
   const finish = (status: LiveStory["status"]) => {
     const cur = id ? stories.get(id) : undefined;
     if (cur) put({ ...cur, status, live: false });
@@ -129,29 +143,32 @@ export async function startStory(req: StoryRequest, h: StartHandlers): Promise<v
             const { type: _t, ...page } = msg; void _t;
             const pages = [...cur.pages.filter((p) => p.n !== page.n), page].sort((a, b) => a.n - b.n);
             put({ ...cur, pages });
-            h.onPage(cur.id, page, Math.round(performance.now() - t0));
+            const ms = Math.round(performance.now() - t0);
+            if (page.n === 1 && !ttfp.has(cur.id)) ttfp.set(cur.id, ms);
+            h.onPage(cur.id, page, ms);
             break;
           }
           case "done":
             finish(msg.status);
-            break;
+            return;
           case "rejected":
             h.onRejected(msg.field, msg.suggestion);
             return;
           case "error":
             finish("failed");
-            h.onError(msg.message);
+            h.onError(msg.message, info("server"));
             return;
         }
       }
       if (done) break;
     }
+    // The stream closed without a done/error line: the server never saw a failure, so the client logs it.
     const cur = id ? stories.get(id) : undefined;
     if (cur?.live) finish(cur.pages.length ? "fallback" : "failed");
-    if (!id) h.onError("empty_stream");
+    h.onError(id ? "stream_ended" : "empty_stream", info("client"));
   } catch (e) {
     finish("failed");
-    h.onError(e instanceof Error ? e.message : "network");
+    h.onError(e instanceof Error ? e.message : "network", info("client"));
   }
 }
 

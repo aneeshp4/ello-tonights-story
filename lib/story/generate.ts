@@ -34,6 +34,7 @@ export interface PageMeta {
   model: string | null;
   cost: number;
   safety: { verdict: string; ok: number; model: string; ms: number } | null;
+  safety_failures: { category: string; ok: number | null; model: string | null }[]; // one per failed safety check (any attempt)
   reason?: string;            // why it fell back
 }
 export interface GeneratedPage { page: StoryPage; meta: PageMeta }
@@ -82,7 +83,7 @@ export async function* generateStory(o: GenerateOptions): AsyncGenerator<Generat
     const deadline = t0 + budget;
     const meta: PageMeta = {
       n, latency_ms: 0, attempts: 0, regenerated: false, fallback: false, safety_blocked: false, decodable_failed: false,
-      offlist: [], words: 0, model: null, cost: 0, safety: null,
+      offlist: [], words: 0, model: null, cost: 0, safety: null, safety_failures: [],
     };
     let accepted: StoryPage | null = null;
 
@@ -151,6 +152,10 @@ export async function* generateStory(o: GenerateOptions): AsyncGenerator<Generat
         }
         if (!s || !s.pass) {
           meta.safety_blocked = true;
+          // A "safe" verdict can still fail on a low ok score; both checks failing (no result) is "error".
+          meta.safety_failures.push(s
+            ? { category: s.verdict === "safe" ? "low_ok" : s.verdict, ok: s.ok, model: s.model }
+            : { category: "error", ok: null, model: null });
           meta.reason = `safety: ${s ? s.verdict : "error"}`;
           avoid = undefined;
           tooLong = false;

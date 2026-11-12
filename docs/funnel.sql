@@ -9,6 +9,10 @@
 -- The ask-placement test is retired: new sessions are always ask='end', so the
 -- live comparison is the headline (h). Sessions from before the change may still
 -- show ask='mid'; filter on created_at if you want only the current flow.
+-- page_ready is written server-side by /api/story (one row per page, real
+-- session_id from the request); page 1 is the "story ready" funnel step below.
+-- Older rows came from the client (props.client = true, page 1 only); the
+-- bool_or per session counts either kind once, so the step reads the same.
 
 -- ============================================================================
 -- 1) Main funnel per variant (ask x h)
@@ -146,3 +150,40 @@ from public.events
 where created_at >= now() - interval '30 days'
 group by 1
 order by landing_viewed desc;
+
+-- ============================================================================
+-- 5) Story latency (page 1)
+--    Event ownership (AGENT_PLAN.md §10): /api/story writes page_ready for every
+--    page (path '/api/story', props.latency_ms = server time to generate that
+--    page). The client no longer sends page_ready; rows with props.client = true
+--    are from before that change and are excluded here. The client's view of the
+--    wait is story_page_viewed{page:1}.ttfp_ms (request -> page 1 on screen).
+-- ============================================================================
+select 'server page_ready.latency_ms' as metric,
+  count(*) as n,
+  percentile_cont(0.5) within group (order by (props ->> 'latency_ms')::numeric) as p50_ms,
+  percentile_cont(0.9) within group (order by (props ->> 'latency_ms')::numeric) as p90_ms
+from public.events
+where name = 'page_ready' and (props ->> 'page')::int = 1
+  and props ->> 'latency_ms' is not null and coalesce(props ->> 'client', 'false') <> 'true'
+  and created_at >= now() - interval '14 days'
+union all
+select 'client story_page_viewed.ttfp_ms',
+  count(*),
+  percentile_cont(0.5) within group (order by (props ->> 'ttfp_ms')::numeric),
+  percentile_cont(0.9) within group (order by (props ->> 'ttfp_ms')::numeric)
+from public.events
+where name = 'story_page_viewed' and (props ->> 'page')::int = 1
+  and props ->> 'ttfp_ms' is not null
+  and created_at >= now() - interval '14 days';
+
+-- Failures by who logged them (server = {type:"error"} from /api/story; client = network,
+-- non-OK status incl. 429 rate_limited, or a stream that ended without done/error).
+select coalesce(props ->> 'source', '(untagged, pre-change)') as source,
+  props ->> 'reason' as reason,
+  count(*) as failures,
+  count(distinct session_id) as sessions
+from public.events
+where name = 'story_failed' and created_at >= now() - interval '14 days'
+group by 1, 2
+order by failures desc;

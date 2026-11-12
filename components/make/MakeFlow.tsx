@@ -101,14 +101,14 @@ function MakeFlow() {
     };
     track("story_requested", { stage: req.stage, interest: req.interest, custom: req.interest_custom, age_band: age, ref });
     setStep("loading");
-    const t0 = performance.now();
     navigated.current = false;
+    // page_ready is logged by /api/story; the user-perceived time to page 1 rides on the Reader's
+    // story_page_viewed{page:1, ttfp_ms} (measured in startStory, see takeTtfp).
     void startStory(req, {
       onStory: () => {},
       onPage: (id, page) => {
         if (page.n !== 1 || navigated.current) return;
         navigated.current = true;
-        track("page_ready", { page: 1, wait_ms: Math.round(performance.now() - t0), source: page.source, client: true, story_id: id });
         router.replace(`/story/${id}`);
       },
       onRejected: (field, suggestion) => {
@@ -126,9 +126,10 @@ function MakeFlow() {
           setStep(2);
         }
       },
-      onError: (message) => {
+      onError: (message, { source, story_id, pages }) => {
+        // Server-reported failures ({type:"error"}) are already in `events`; log only what the server couldn't see.
+        if (source === "client") track("story_failed", { source, reason: message, stage: req.stage, story_id, pages });
         if (navigated.current) return; // the reader handles a stream that ends early
-        track("story_failed", { reason: message, stage: req.stage });
         setError(message === "rate_limited" ? "That's a lot of stories! Try again in a little while." : "Oops, the story got stuck. Let's try again.");
         setStep("error");
       },

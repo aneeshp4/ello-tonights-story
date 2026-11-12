@@ -9,7 +9,7 @@ import { AskSheet } from "./AskSheet";
 import { DonePanel } from "./DonePanel";
 import { Scene, Yello } from "./Scene";
 import { ParentTip, StoryText } from "./StoryText";
-import { readUtm, submitLead } from "./store";
+import { readUtm, submitLead, takeTtfp } from "./store";
 import { useResolvedStory } from "./useResolvedStory";
 
 const PAGES = 5;
@@ -50,7 +50,9 @@ export function Reader({ id, stored }: { id: string; stored: StoredStory | null 
     }
     if (!viewed.current.has(currentN)) {
       viewed.current.add(currentN);
-      track("story_page_viewed", { page: currentN, story_id: id });
+      // ttfp_ms: request -> page 1 as the user saw it (only for a story streamed in this tab, reported once).
+      const ttfp_ms = currentN === 1 ? takeTtfp(id) : undefined;
+      track("story_page_viewed", { page: currentN, story_id: id, ...(ttfp_ms != null ? { ttfp_ms } : {}) });
     }
   }, [currentN, id]);
 
