@@ -189,7 +189,7 @@ function MakeFlow() {
           <h1 className="text-h1">Who&apos;s the hero?</h1>
           <div className="flex flex-col gap-2">
             <label htmlFor="hero" className="text-body font-bold">Story name</label>
-            <input id="hero" className="ello-input" value={hero} maxLength={12} autoComplete="off" autoCapitalize="words"
+            <input id="hero" className="ello-input" value={hero} maxLength={16} autoComplete="off" autoCapitalize="words"
               placeholder="Mo" aria-invalid={!!error} aria-describedby="hero-note"
               onChange={(e) => { setHero(e.target.value); setHeroIsFun(false); setError(null); }} />
             <button type="button" className="ello-chip self-start" onClick={pickFun}>🎲 Pick a fun name</button>

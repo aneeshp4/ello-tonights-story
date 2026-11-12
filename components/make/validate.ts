@@ -16,7 +16,7 @@ export function cleanHero(raw: string): string {
 export function heroError(raw: string): { reason: string; message: string } | null {
   const v = cleanHero(raw);
   if (!v) return { reason: "empty", message: "Add a name for the hero, or pick a fun one!" };
-  if (v.length > 12) return { reason: "too_long", message: "Keep it to 12 letters or fewer." };
+  if (v.length > 16) return { reason: "too_long", message: "Keep it to 16 letters or fewer." };
   if (!/^[\p{L}][\p{L} '\-]*$/u.test(v)) return { reason: "chars", message: "Letters only, please. Or pick a fun name!" };
   return null;
 }
