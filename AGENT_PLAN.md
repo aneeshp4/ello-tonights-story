@@ -9,7 +9,7 @@ Visual flow and copy (reviewed with comments): https://claude.ai/artifact/HERoTD
 
 ## 1. What we're building
 
-This is a lead gen web tool for **Ello**, an AI reading teacher for kids aged 5–9. It's a take-home: about 3 hours, ship-shaped, testable with real families within 2 weeks, and no ad spend.
+This is a lead gen web tool for **Ello**, the AI teacher for kids 5–9 (reading, math and English). It's a take-home: about 3 hours, ship-shaped, testable with real families within 2 weeks, and no ad spend.
 
 **The product:** a parent picks what their kid is obsessed with, plus how well the kid reads. In about 3 seconds they're reading page 1 of a short story about that obsession. The story is **decodable**: it only uses the phonics patterns the kid can sound out, so the kid can read it themselves. We ask for an email **after** the story, offering chapter 2 tomorrow night. Chapter 3 lives in the Ello app.
 
@@ -105,12 +105,12 @@ The design is mobile first (about 393px), with large type and one main action pe
 | 2 | `/make` step 2 | 12 interest chips (dinosaurs, trucks, space, dogs, sharks, soccer, mermaids, robots, bugs, cooking, castles, unicorns) + free text (40 chars max) | `interest_selected{interest, custom}`, `input_rejected{field}` |
 | 3 | `/make` step 3 | "Which can {hero} read on their own? Tap the hardest one." Cards: `cat · sun`, `ship · frog`, `cake · rain`, `because · night`, plus chips "Not reading yet" and "Not sure" | `reading_check_completed{stage, source}`, `story_requested` |
 | — | loading | Yello + "Writing a {interest} story with words {hero} can sound out…" + reading tip. Waits **only for page 1**. | (server logs `page_ready`; see §10) |
-| 4 | `/story/[id]` | A fixed full-height (`h-dvh`) column so nothing moves between pages: scene, a text box that fills the leftover space and scrolls inside itself (with a "more ↓" cue), a fixed-height parent-tip box, and a fixed-height controls row (page dots + "Next page"). If the next page isn't ready, the text box shows Yello "turning the page…" and the button stays put. **Last page:** the controls row turns into "The End. How did {hero} do?" 😍 🙂 😕 / Skip + "📬 Chapter 2 comes out tomorrow at 7pm". `story_finished` fires when the last page is reached. | `story_page_viewed{page, ttfp_ms on page 1}`, `next_page_waited{page, wait_ms}`, `story_finished`, `kid_reaction_rated{score}`, `print_clicked` |
+| 4 | `/story/[id]` | A fixed full-height (`h-dvh`) column so nothing moves between pages: scene (a share of the leftover height) and a text box whose font auto-fits it (22–40px, centered; long pages scroll inside at the minimum, with a "more ↓" cue), then a fixed-height controls row (page dots + "Next page"; ← from page 2). Pages turn by button, horizontal swipe or arrow keys. Progress (page, phase, rating, one-time events) is kept per story in sessionStorage `ello_progress_{id}`, so a reload resumes in place. No parent-tip box: tapping a theme word shows a small "Tricky word: say it together" hint. If the next page isn't ready, the text box shows Yello "turning the page…" and the button stays put. **Last page:** the controls row turns into "The End. How did {hero} do?" 😍 🙂 😕 / Skip + "📬 Chapter 2 comes out tomorrow at 7pm". `story_finished` fires when the last page is reached. | `story_page_viewed{page, ttfp_ms on page 1}`, `next_page_waited{page, wait_ms}`, `story_finished`, `kid_reaction_rated{score}`, `print_clicked` |
 | 5 | sheet on the last page | Opens over the last page after the rating (or Skip). "{hero}'s story isn't over": "Chapter 2 arrives in your inbox tomorrow at 7pm, plus a printable copy", email input, "Send me Chapter 2", "Not now", "One story a night for 3 nights, starring {hero}. Unsubscribe anytime." The page behind is locked (`position: fixed` body), and the sheet fits the visual viewport so the keyboard can't cover the input. **The email ask only ever comes at the end of the story** (the mid-story gate is retired). | `email_ask_viewed{ask:'end'}`, `lead_submitted`, `email_ask_dismissed` |
 | 6 | reader, done state | "Not now" lands here: "Sweet dreams, {hero}! Chapter 2 comes out tomorrow at 7pm. Want it in your inbox?" + "Send me Chapter 2" (reopens the sheet). After signup: "Chapter 2 arrives tomorrow at 7pm". Share button (Web Share API with copy-link fallback) → `/s/{id}?ref={id}`, app card "Want Ello to listen while {hero} reads?" + "Get Ello free" (App Store link), "Make another story" | `share_clicked`, `app_cta_clicked`, `another_story_clicked` |
 | — | `/s/[id]` | Read-only story with `fun_name`, CTA → `/make?ref={id}` | `share_landing_viewed{ref}` |
 
-**Highlighting:** client-side, highlight words that match the stage's *target* pattern (e.g. stage 2 → `sh|ch|th|wh|ck` or an initial/final blend). Theme words (§7) get a different highlight with the tip "Help with: dinosaur".
+**Highlighting:** client-side, highlight words that match the stage's *target* pattern (e.g. stage 2 → `sh|ch|th|wh|ck` or an initial/final blend). Theme words (§7) get a different highlight; tapping one shows "Tricky word: say it together".
 
 **Fun names list:** Captain Pickle, Rocket Rex, Pip, Zip, Bean, Moss, Tug, Sunny, Biscuit, Nova. All are decodable-ish and gender-neutral.
 
@@ -185,7 +185,7 @@ Don't use `typesafe/jev-router`. It's a model *router* with variable latency (up
 
 **Age default when "Not sure":** 4-5 → 1, 6 → 2, 7 → 3, 8-9 → 4.
 **Sight words** (stages 1–3): a, the, is, to, I, he, she, we, me, be, was, said, of, you, are, they, my, do, go, no, so, here, there, what, for, have, like, look, see, come, some, one, two, all, his, her, put, push, pull.
-**Theme words:** at most 2 non-decodable interest words per story (e.g. "dinosaur", "mermaid"), shown to the parent as "Help with: …". Ask the model to use each one at most once per page.
+**Theme words:** at most 2 non-decodable interest words per story (e.g. "dinosaur", "mermaid"), shown to the parent as a tap-to-reveal hint on the word. Ask the model to use each one at most once per page.
 
 **`decodable.ts`:** tokenize, then lowercase and strip punctuation. A word passes if it's a sight word, a theme word, the hero token, or matches the stage's pattern grammar (a regex per stage built from the allowed graphemes). A page passes if `offlist <= 1` (stages 1–2) or `<= 3` (stage 3). Stages 0 and 4 only get the length check. Also enforce the word caps: over the cap means regenerate.
 

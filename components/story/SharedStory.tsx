@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import type { StoredStory } from "@/lib/contracts";
 import { track } from "@/lib/track";
+import { ElloWordmark } from "@/components/brand/ElloWordmark";
 import { Scene, Yello } from "./Scene";
 import { StoryText } from "./StoryText";
 import { useResolvedStory } from "./useResolvedStory";
@@ -40,7 +41,10 @@ export function SharedStory({ id, stored }: { id: string; stored: StoredStory | 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-4 pb-12 pt-6">
       <header className="flex flex-col gap-2">
-        <p className="text-body-s font-bold uppercase tracking-wide text-teal-dark">A Tonight&apos;s Story from Ello</p>
+        <p className="flex items-center gap-2 text-body-s font-bold uppercase tracking-wide text-teal-dark">
+          <ElloWordmark height={24} decorative />
+          <span>A Tonight&apos;s Story from Ello</span>
+        </p>
         <h1 className="text-h3 text-ink-dark">{story.title}</h1>
         <p className="text-body text-ink">A story a kid read tonight, made just for their reading level. Make one about the thing your kid loves.</p>
         {cta}

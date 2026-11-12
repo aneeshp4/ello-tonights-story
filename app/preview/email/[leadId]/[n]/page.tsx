@@ -7,11 +7,11 @@ import type { Metadata } from "next";
 import { HERO_TOKEN, INTERESTS, type StoredStory, type Stage } from "@/lib/contracts";
 import { getLead, stageFromName, type LeadRow } from "@/lib/db/leads";
 import { getStory } from "@/lib/db/stories";
+import { APP_STORE_URL } from "@/lib/links";
+import { ElloWordmark } from "@/components/brand/ElloWordmark";
 
 export const metadata: Metadata = { title: "Email preview · Tonight's Story", robots: { index: false } };
 
-// TODO: swap for Ello's exact App Store listing URL.
-const APP_STORE_URL = "https://apps.apple.com/us/search?term=ello%20reading";
 
 const STAGE_INFO: Record<Stage, { label: string; can: string; next: string; tip: string }> = {
   0: { label: "Getting ready to read", can: "listens to stories and points at a few words", next: "letter sounds and short words like cat and sun",
@@ -95,6 +95,7 @@ async function EmailPreviewBody({ params }: { params: Promise<{ leadId: string; 
 
       <article className="ello-card flex flex-col gap-4">
         <header className="border-b-2 border-ink-lighter pb-3 text-body-s text-ink">
+          <ElloWordmark height={28} className="mb-3" />
           <p><b>From:</b> Ello &lt;stories@ello.example&gt;</p>
           <p><b>To:</b> {maskEmail(lead.email)}</p>
           <p><b>When:</b> {SEND_DAY[n - 1]}</p>
@@ -155,7 +156,7 @@ function D3({ lead, stage, hero }: { lead: LeadRow; stage: Stage | null; hero: s
   const deepLink = `ello://story?${q.toString()}`;
   return (
     <section className="flex flex-col gap-3">
-      <p>{hero} has read two chapters about {interestLabel(lead.interest)}. Chapter 3 is waiting in the Ello app, where Ello listens while {hero} reads out loud and helps with tricky words, just like a reading teacher.</p>
+      <p>{hero} has read two chapters about {interestLabel(lead.interest)}. Chapter 3 is waiting in the Ello app, where Ello listens while {hero} reads out loud and helps with tricky words.</p>
       <p>We&apos;ve set it up already: same story, same reading level.</p>
       <a href={deepLink} className="ello-btn self-start">Open Chapter 3 in Ello</a>
       <p className="text-body-s text-ink">

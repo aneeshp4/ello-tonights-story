@@ -1,5 +1,5 @@
 import type { HeadlineVariant } from "@/lib/contracts";
-import { Yello } from "@/components/brand/Yello";
+import { ElloWordmark } from "@/components/brand/ElloWordmark";
 import { ExampleStory } from "./ExampleStory";
 import { LandingViewed, MakeStoryCta } from "./LandingClient";
 
@@ -22,11 +22,10 @@ export function Landing({ h }: { h: HeadlineVariant }) {
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pb-10 pt-6">
       <LandingViewed h={h} />
 
-      <p className="mb-6 flex items-center gap-2 text-body-s font-bold text-ink-dark">
-        <Yello size="sm" />
-        <span>
-          Tonight&apos;s Story <span className="font-normal text-ink">by Ello</span>
-        </span>
+      <p className="mb-6 flex items-center gap-2.5 text-body-s font-bold text-ink-dark">
+        <ElloWordmark height={30} />
+        <span aria-hidden className="h-5 w-px bg-ink-lighter" />
+        <span>Tonight&apos;s Story</span>
       </p>
 
       <h1 className="text-[2rem] leading-[1.2] text-ink-darker sm:text-h1" data-variant={h}>
@@ -80,11 +79,6 @@ export function Landing({ h }: { h: HeadlineVariant }) {
       <div className="mt-8">
         <MakeStoryCta source="landing_bottom" className="ello-btn ello-btn--secondary" />
       </div>
-
-      <footer className="mt-10 flex items-center justify-center gap-2 text-center text-body-s text-ink">
-        <Yello size="sm" />
-        <span>From Ello, the AI reading teacher for ages 5–9</span>
-      </footer>
     </main>
   );
 }

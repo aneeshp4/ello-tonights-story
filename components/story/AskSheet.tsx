@@ -1,22 +1,14 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import type { LeadResponse } from "@/lib/contracts";
-
-const ERRORS: Record<string, string> = {
-  invalid_email: "That email doesn't look quite right.",
-  rate_limited: "Too many tries. Please wait a bit and try again.",
-  server: "Something went wrong. Try again?",
-};
+import { useEffect, useRef } from "react";
+import { EmailInput, Honeypot, type SubmitEmail, useEmailForm } from "./emailForm";
 
 export function AskSheet({ hero, onSubmit, onDismiss }: {
   hero: string;
-  onSubmit: (email: string, website: string) => Promise<LeadResponse>;
+  onSubmit: SubmitEmail;
   onDismiss: () => void;
 }) {
-  const [email, setEmail] = useState("");
-  const [website, setWebsite] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  const form = useEmailForm(onSubmit);
+  const { busy, submit } = form;
   const overlay = useRef<HTMLDivElement>(null);
 
   // Lock the page behind the sheet. overflow:hidden alone doesn't stop iOS Safari from
@@ -55,16 +47,6 @@ export function AskSheet({ hero, onSubmit, onDismiss }: {
     return () => window.removeEventListener("keydown", onKey);
   }, [busy, onDismiss]);
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const v = email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) || v.length > 254) { setErr(ERRORS.invalid_email); return; }
-    setBusy(true); setErr(null);
-    const res = await onSubmit(v, website);
-    setBusy(false);
-    if (!res.ok) setErr(ERRORS[res.error] ?? ERRORS.server);
-  }
-
   return (
     <div ref={overlay} className="fixed inset-x-0 top-0 z-50 flex h-dvh items-end justify-center bg-ink-darker/40" role="dialog" aria-modal="true" aria-labelledby="ask-title">
       <form onSubmit={submit} className="max-h-full w-full max-w-md overflow-y-auto overscroll-contain rounded-t-ello-lg bg-white px-5 pt-6 pb-[max(2rem,env(safe-area-inset-bottom))] shadow-card">
@@ -74,17 +56,8 @@ export function AskSheet({ hero, onSubmit, onDismiss }: {
         <p className="mb-4 text-body text-ink">
           <strong>Chapter 2 arrives in your inbox tomorrow at 7pm</strong>, plus a printable copy of tonight&apos;s story.
         </p>
-        <label htmlFor="ask-email" className="sr-only">Email</label>
-        <input
-          id="ask-email" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com"
-          className="ello-input" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} required
-          aria-invalid={!!err} aria-describedby={err ? "ask-err" : undefined}
-        />
-        {/* honeypot: real people never see or fill this */}
-        <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-          <label>Website <input name="website" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} /></label>
-        </div>
-        {err && <p id="ask-err" className="mt-2 text-body-s font-semibold text-coral-dark">{err}</p>}
+        <EmailInput form={form} id="ask-email" errId="ask-err" />
+        <Honeypot form={form} />
         <button type="submit" className="ello-btn mt-4" disabled={busy}>{busy ? "Sending…" : "Send me Chapter 2"}</button>
         <button type="button" className="mt-3 w-full py-3 text-body font-semibold text-ink" onClick={onDismiss} disabled={busy}>Not now</button>
         <p className="mt-2 text-center text-body-s text-ink">One story a night for 3 nights, starring {hero}. Unsubscribe anytime.</p>
