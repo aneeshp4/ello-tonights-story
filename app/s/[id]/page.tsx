@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps<"/s/[id]">): Promis
   return { title, description, openGraph: { title, description, type: "article", siteName: "Tonight's Story by Ello" } };
 }
 
-// Read-only shared story. Hero is always the fun_name (the real name is never stored).
+// Read-only shared story. Hero is always the fun_name (stories never store the real name).
 export default function SharedPage({ params }: PageProps<"/s/[id]">) {
   return (
     <Suspense fallback={<div className="flex flex-1 items-center justify-center"><Yello /></div>}>

@@ -36,8 +36,8 @@ function maskEmail(email: string): string {
   return `${user.slice(0, 1)}***@${host.slice(0, 1)}***${tld}`;
 }
 
-function heroize(text: string, funName: string) {
-  return text.split(HERO_TOKEN).join(funName);
+function heroize(text: string, name: string) {
+  return text.split(HERO_TOKEN).join(name);
 }
 
 function interestLabel(interest: string | null): string {
@@ -68,7 +68,9 @@ async function EmailPreviewBody({ params }: { params: Promise<{ leadId: string; 
   if (!lead) notFound();
   const story = lead.story_id ? await getStory(lead.story_id) : null;
   const stage = (stageFromName(lead.reading_stage) ?? story?.stage ?? null) as Stage | null;
-  const hero = story?.fun_name ?? "your reader";
+  // The name the parent typed is stored on the lead (only when they signed up). Older leads
+  // have no hero_name, so fall back to the story's fun name.
+  const hero = lead.hero_name ?? story?.fun_name ?? "your reader";
 
   const subject = [
     `${hero}'s story, ready to print`,
@@ -118,7 +120,7 @@ function D0({ story, hero }: { story: StoredStory | null; hero: string }) {
       <p>Thanks for reading with {hero} tonight! Here&apos;s the story as a printable booklet, so {hero} can read it again tomorrow, with a pencil to circle the words they sounded out.</p>
       {story ? (
         <>
-          <p className="text-h3">{story.title}</p>
+          <p className="text-h3">{heroize(story.title, hero)}</p>
           {story.pages[0] && <p className="ello-story">{heroize(story.pages[0].text, hero)}</p>}
           <Link href={`/print/${story.id}`} className="ello-btn self-start">Print the story</Link>
           <Link href={`/story/${story.id}`} className="text-teal-dark underline">Read it on screen</Link>
@@ -137,7 +139,7 @@ function D1({ story, hero }: { story: StoredStory | null; hero: string }) {
     <section className="flex flex-col gap-3">
       <p>Remember how the story ended last night?</p>
       {last && <blockquote className="ello-story border-l-4 border-teal-lighter pl-3">{heroize(last.text, hero)}</blockquote>}
-      <p className="text-h3">Chapter 2{story?.title ? `: more ${story.title}` : ""}</p>
+      <p className="text-h3">Chapter 2{story?.title ? `: more ${heroize(story.title, hero)}` : ""}</p>
       <p className="rounded-ello bg-pastel-teal p-4 text-ink-dark">
         <i>Teaser (mocked):</i> chapter 2 would be generated at the same reading level, picking up from that hook, and linked here.
       </p>

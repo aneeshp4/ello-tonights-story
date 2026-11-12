@@ -1,9 +1,11 @@
 // POST /api/lead: LeadRequest -> LeadResponse. Inserts into public.leads.
-// Never stores a hero name (LeadRequest has no hero field, and we only copy
-// whitelisted fields). Email sending is mocked: see /preview/email/{lead_id}/{1..4}.
+// Only whitelisted fields are copied. The hero name (first name/nickname) is stored on the
+// lead so Chapter 2 emails can use it; it is validated like /api/story and never logged.
+// Email sending is mocked: see /preview/email/{lead_id}/{1..4}.
 import { AGE_BANDS, type AgeBand, type LeadResponse, type Stage } from "@/lib/contracts";
 import { clientIp, rateLimit } from "@/lib/ratelimit";
-import { supabaseConfigured, variantText } from "@/lib/supabase";
+import { checkHero } from "@/lib/safety/input";
+import { SupabaseError, supabaseConfigured, variantText } from "@/lib/supabase";
 import { insertLead, stageName } from "@/lib/db/leads";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
@@ -17,6 +19,13 @@ function str(v: unknown, max: number): string | null {
   if (typeof v !== "string") return null;
   const t = v.trim();
   return t ? t.slice(0, max) : null;
+}
+
+// Hero name: same guard as /api/story (length, letters, profanity). Anything that fails
+// is stored as null rather than rejecting the lead. Never logged.
+function cleanHeroName(v: unknown): string | null {
+  const r = checkHero(v);
+  return r.ok ? r.value : null;
 }
 
 function cleanUtm(v: unknown): Record<string, string> {
@@ -75,10 +84,12 @@ export async function POST(req: Request) {
       referrer: ref,
       utm: cleanUtm(body.utm),
       consent: body.consent === true,
+      hero_name: cleanHeroName(body.hero),
     });
     return reply({ ok: true, lead_id });
   } catch (e) {
-    console.error("[lead] insert failed:", e);
+    // Don't log the error body: PostgREST can echo the failing row (email, hero name).
+    console.error("[lead] insert failed:", e instanceof SupabaseError ? `supabase ${e.status}` : (e as Error)?.name ?? "error");
     return reply({ ok: false, error: "server" }, 500);
   }
 }
