@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { StoredStory } from "@/lib/contracts";
 import { getSessionId, track } from "@/lib/track";
 import { getVariant } from "@/lib/variant";
@@ -31,6 +31,8 @@ export function Reader({ id, stored }: { id: string; stored: StoredStory | null 
   const waitStart = useRef<number | null>(null);
   const viewed = useRef(new Set<number>());
   const finished = useRef(false);
+  const textBox = useRef<HTMLDivElement>(null);
+  const [more, setMore] = useState(false); // text box has unseen text below
 
   const pages = story?.pages ?? [];
   const streaming = !!story && (story.live || story.status === "generating");
@@ -52,6 +54,22 @@ export function Reader({ id, stored }: { id: string; stored: StoredStory | null 
     }
   }, [currentN, id]);
 
+  // Each page starts at the top of the text box; show a "more" cue when a long page overflows.
+  const currentText = current?.text;
+  const checkMore = useCallback(() => {
+    const el = textBox.current;
+    setMore(!!el && el.scrollHeight - el.scrollTop - el.clientHeight > 12);
+  }, []);
+  useEffect(() => {
+    const el = textBox.current;
+    if (!el) return;
+    el.scrollTop = 0;
+    checkMore();
+    const ro = new ResizeObserver(checkMore);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [idx, currentText, phase, checkMore]);
+
   // Reaching the last page = finished the story.
   useEffect(() => {
     if (isLast && !finished.current) {
@@ -59,15 +77,6 @@ export function Reader({ id, stored }: { id: string; stored: StoredStory | null 
       track("story_finished", { story_id: id, pages: pages.length });
     }
   }, [isLast, id, pages.length]);
-
-  // Lock background scroll while the email sheet is open.
-  useEffect(() => {
-    if (!sheetOpen) return;
-    const html = document.documentElement, body = document.body;
-    const prev = [html.style.overflow, body.style.overflow];
-    html.style.overflow = "hidden"; body.style.overflow = "hidden";
-    return () => { html.style.overflow = prev[0]; body.style.overflow = prev[1]; };
-  }, [sheetOpen]);
 
   // Reloaded while the server was still generating: poll the server component.
   const needPoll = !!story && !story.live && story.status === "generating" && !!stored;
@@ -121,7 +130,7 @@ export function Reader({ id, stored }: { id: string; stored: StoredStory | null 
   async function lead(email: string, website: string) {
     const res = await submitLead({
       email, story_id: id, session_id: getSessionId(), variant: variant(), age_band: story!.age_band,
-      stage: story!.stage, interest: story!.interest, consent: true, ref: story!.ref, utm: readUtm(), website,
+      stage: story!.stage, interest: story!.interest, consent: true, hero, ref: story!.ref, utm: readUtm(), website,
     });
     if (res.ok) {
       track("lead_submitted", { ask: "end", story_id: id });
@@ -149,20 +158,28 @@ export function Reader({ id, stored }: { id: string; stored: StoredStory | null 
       </header>
 
       <div className="shrink-0">
-        <Scene scene={current?.scene ?? "outdoors-day"} interest={story.interest} size="sm" />
+        <Scene scene={current?.scene ?? "outdoors-day"} interest={story.interest} size="reader" />
       </div>
 
       {/* Text box: fills the remaining space; long pages scroll inside it. */}
-      <div className="ello-card flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div className="relative flex min-h-0 flex-1 flex-col">
+      <div ref={textBox} onScroll={checkMore} tabIndex={more ? 0 : -1} aria-label="Story text"
+        className="ello-card flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
         {current ? (
           <StoryText text={current.text} stage={story.stage} themeWords={story.theme_words} hero={hero}
-            className={story.stage >= 3 ? "text-[1.375rem]! leading-[1.7]!" : ""} />
+            className={story.stage >= 3 ? "text-[1.375rem]! leading-[1.7]!" : "[@media(max-height:720px)]:text-[1.5rem]! [@media(max-height:720px)]:leading-[1.65]!"} />
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <Yello size={56} />
             <p className="text-body font-bold text-ink">turning the page…</p>
           </div>
         )}
+      </div>
+      {more && (
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 flex h-14 items-end justify-center rounded-b-ello-lg bg-gradient-to-t from-white via-white/90 to-transparent pb-1.5">
+          <span className="rounded-full bg-pastel-teal px-3 py-0.5 text-body-s font-bold text-teal-darker">more ↓</span>
+        </div>
+      )}
       </div>
 
       {/* Tip box: fixed height so it never pushes the controls around. */}

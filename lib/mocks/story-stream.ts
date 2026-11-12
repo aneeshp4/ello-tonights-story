@@ -7,7 +7,8 @@
 //
 // Testing hooks (mock only): hero "Reject" -> {type:"rejected", field:"hero"};
 // custom interest "reject" -> {type:"rejected", field:"interest", suggestion:"trucks"};
-// hero "Oops" -> {type:"error"} after page 2.
+// hero "Oops" -> {type:"error"} after page 2; hero "Slow" -> 5s between pages (exercises
+// "turning the page…"); hero "Long" -> long pages 2 and 5 (exercises the scrolling text box).
 import type { LeadRequest, LeadResponse, StoryPage, StoryRequest, StreamMsg } from "../contracts";
 import { HERO_TOKEN } from "../contracts";
 
@@ -24,6 +25,8 @@ export const MOCK_STORY = {
     { n: 5, scene: "outdoors-night", text: `${HERO_TOKEN} dumps the rocks. The path is fixed! At dusk, ${HERO_TOKEN} spots a shell in the sand. It has a lock on it. What is in the shell?` },
   ] as Omit<StoryPage, "source">[],
 };
+
+const LONG_EXTRA = `${HERO_TOKEN} sees a hen and a big black dog. The dog runs to the hen. The hen flaps and hops up on the truck. ${HERO_TOKEN} grins. The sun is hot, so ${HERO_TOKEN} gets a drink. Then the wind picks up and the sand spins in the air.`;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -54,12 +57,14 @@ export function mockStoryStream(req: StoryRequest): ReadableStream<Uint8Array> {
       send({ type: "story", id: mockId(), title: fill(MOCK_STORY.title, req.hero), theme_words: MOCK_STORY.theme_words });
       await sleep(950); // ~1.2s to page 1
       for (const p of MOCK_STORY.pages) {
-        send({ type: "page", ...p, text: fill(p.text, req.hero), source: "model" });
+        const long = req.hero.trim().toLowerCase() === "long" && (p.n === 2 || p.n === 5);
+        const text = long ? `${p.text} ${LONG_EXTRA}` : p.text;
+        send({ type: "page", ...p, text: fill(text, req.hero), source: "model" });
         if (p.n === 2 && req.hero.trim().toLowerCase() === "oops") {
           send({ type: "error", message: "mock error" });
           return controller.close();
         }
-        if (p.n < 5) await sleep(1500);
+        if (p.n < 5) await sleep(req.hero.trim().toLowerCase() === "slow" ? 5000 : 1500);
       }
       send({ type: "done", status: "complete" });
       controller.close();

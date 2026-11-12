@@ -44,9 +44,9 @@ export function DonePanel({ id, hero, leadDone, onAsk }: { id: string; hero: str
         ) : (
           <>
             <h2 className="text-h3">Sweet dreams, {hero}!</h2>
-            <p className="text-body text-ink">Great reading tonight. Want to find out what happens next?</p>
+            <p className="text-body text-ink">Great reading tonight. <strong>Chapter 2 comes out tomorrow at 7pm.</strong> Want it in your inbox?</p>
             {onAsk && (
-              <button type="button" className="ello-btn" onClick={onAsk}>Get Chapter 2 tomorrow at 7pm</button>
+              <button type="button" className="ello-btn" onClick={onAsk}>Send me Chapter 2</button>
             )}
           </>
         )}
