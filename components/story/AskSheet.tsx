@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import type { AskVariant, LeadResponse } from "@/lib/contracts";
+import type { LeadResponse } from "@/lib/contracts";
 
 const ERRORS: Record<string, string> = {
   invalid_email: "That email doesn't look quite right.",
@@ -8,9 +8,8 @@ const ERRORS: Record<string, string> = {
   server: "Something went wrong. Try again?",
 };
 
-export function AskSheet({ hero, ask, onSubmit, onDismiss }: {
+export function AskSheet({ hero, onSubmit, onDismiss }: {
   hero: string;
-  ask: AskVariant;
   onSubmit: (email: string, website: string) => Promise<LeadResponse>;
   onDismiss: () => void;
 }) {
@@ -30,14 +29,14 @@ export function AskSheet({ hero, ask, onSubmit, onDismiss }: {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink-darker/40" role="dialog" aria-modal="true" aria-labelledby="ask-title">
+    <div className="fixed inset-0 z-50 flex items-end justify-center overscroll-contain bg-ink-darker/40" role="dialog" aria-modal="true" aria-labelledby="ask-title">
       <form onSubmit={submit} className="w-full max-w-md rounded-t-ello-lg bg-white px-5 pb-8 pt-6 shadow-card">
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-ink-lighter" />
-        <p className="mb-1 text-3xl" aria-hidden>📖✨</p>
-        <h2 id="ask-title" className="text-h3 text-ink-dark">
-          {ask === "mid" ? "Enter your email to finish the story" : `${hero}'s story isn't over`}
-        </h2>
-        <p className="mb-4 text-body text-ink">Get Chapter 2 tomorrow at 7pm, plus a printable copy of tonight&apos;s story.</p>
+        <p className="mb-1 text-3xl" aria-hidden>📬</p>
+        <h2 id="ask-title" className="text-h3 text-ink-dark">{hero}&apos;s story isn&apos;t over</h2>
+        <p className="mb-4 text-body text-ink">
+          <strong>Chapter 2 arrives in your inbox tomorrow at 7pm</strong>, plus a printable copy of tonight&apos;s story.
+        </p>
         <label htmlFor="ask-email" className="sr-only">Email</label>
         <input
           id="ask-email" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com"

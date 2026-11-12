@@ -31,7 +31,7 @@ export async function guardStoryRequest(body: unknown, signal?: AbortSignal): Pr
   }
 
   const v = (b.variant ?? {}) as Partial<Variant>;
-  const variant: Variant = { ask: v.ask === "mid" ? "mid" : "end", h: v.h === "b" ? "b" : "a" };
+  const variant: Variant = { ask: "end", h: v.h === "b" ? "b" : "a" };
   const str = (x: unknown, max: number) => (typeof x === "string" ? x.slice(0, max) : "");
 
   return {
