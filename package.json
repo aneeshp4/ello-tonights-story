@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -p ${PORT:-3000}",
-    "lint": "eslint"
+    "lint": "eslint",
+    "eval:story": "tsx --env-file=.env.local scripts/eval-story.ts",
+    "check:fallback": "tsx scripts/check-fallback.ts"
   },
   "dependencies": {
     "next": "16.4.6",
+    "obscenity": "^0.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1"
@@ -22,6 +25,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   },
   "engines": {

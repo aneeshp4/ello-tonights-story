@@ -1,0 +1,34 @@
+{
+  "title": "{{hero}} Blasts Off",
+  "theme_words": [
+    "rocket",
+    "space"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} has a rocket ship. It is red and black, with a big hatch. {{hero}} sits in it and hits the switch. Blast off! Up it zips to space.",
+      "scene": "space"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} wants to land on a big red rock in space and get a chunk of it for Mom. {{hero}} spots the rock and zips at it fast.",
+      "scene": "space"
+    },
+    {
+      "n": 3,
+      "text": "But the rocket gets stuck in a thick fog of dust. {{hero}} can not spot the red rock. It is lost in the dust.",
+      "scene": "space"
+    },
+    {
+      "n": 4,
+      "text": "Then {{hero}} hits the big lamp switch. Flash! The lamp cuts the dust, and there is the red rock. {{hero}} lands with a soft bump and gets a chunk.",
+      "scene": "space"
+    },
+    {
+      "n": 5,
+      "text": "At last, {{hero}} is snug in bed with the red chunk. But then the chunk went blink, blink, blink! What is in it?",
+      "scene": "bedroom"
+    }
+  ]
+}

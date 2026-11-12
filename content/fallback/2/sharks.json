@@ -1,0 +1,34 @@
+{
+  "title": "{{hero}} Swims with a Shark",
+  "theme_words": [
+    "shark",
+    "ocean"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} can swim fast in the ocean. {{hero}} has a pal. It is a shark with a big fin and a soft grin. The shark is kind and fun.",
+      "scene": "water"
+    },
+    {
+      "n": 2,
+      "text": "The shark wants to find a lost bell on a ship in the sand. {{hero}} and the shark set off. Swish, swish, swish!",
+      "scene": "water"
+    },
+    {
+      "n": 3,
+      "text": "But the ship is in a thick clump of kelp. The bell is stuck in the kelp. {{hero}} tugs, but the kelp will not let go.",
+      "scene": "water"
+    },
+    {
+      "n": 4,
+      "text": "Then the shark swims in quick spins. Swish, swish! The kelp spins and lifts. The bell drops in {{hero}}'s hand. Ding, ding! {{hero}} and the shark grin.",
+      "scene": "water"
+    },
+    {
+      "n": 5,
+      "text": "At dusk, {{hero}} is in bed. The bell sits on a shelf. But then, ding, ding, the bell rings! Not {{hero}}, not the shark. What rang the bell?",
+      "scene": "bedroom"
+    }
+  ]
+}

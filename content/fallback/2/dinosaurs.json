@@ -1,0 +1,33 @@
+{
+  "title": "{{hero}} and the Dinosaur Pond",
+  "theme_words": [
+    "dinosaur"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} has a pet dinosaur from the swamp. It has a long neck and a soft, thick tum. {{hero}} and the pet stomp and romp in the sun.",
+      "scene": "forest"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} wants to swim in the pond with the pet. The pond is past the rocks and the tall grass. {{hero}} jumps on the pet's back, and off they go.",
+      "scene": "forest"
+    },
+    {
+      "n": 3,
+      "text": "But a log is stuck on the path. It is big and thick. The pet can not get past it. {{hero}} pushes, but the log will not shift.",
+      "scene": "forest"
+    },
+    {
+      "n": 4,
+      "text": "Then the pet lifts the log with its long neck. Thump! The log rolls off the path. {{hero}} hugs the pet. Then they swim and splash in the pond.",
+      "scene": "water"
+    },
+    {
+      "n": 5,
+      "text": "At dusk, {{hero}} is snug in bed. But at the pond, in a nest of sticks, sits a big egg with spots. What will hatch from it?",
+      "scene": "bedroom"
+    }
+  ]
+}

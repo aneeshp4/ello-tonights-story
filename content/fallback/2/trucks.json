@@ -1,0 +1,33 @@
+{
+  "title": "{{hero}} and the Dump Truck",
+  "theme_words": [
+    "digger"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} has a big dump truck. It is red and black. Honk, honk! {{hero}} and the truck help at the big dig on the hill.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 2,
+      "text": "The digger fills the truck with rocks and sand. {{hero}} must bring the stuff to the top of the hill. Then the gang can fix the path.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "But the path is thick with mud. Splat! The truck slips and gets stuck. {{hero}} pumps the gas, but the truck just spins.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "Then the digger chugs up. It sets flat rocks in the mud. The truck gets a grip. Up, up, up! {{hero}} gets to the top of the hill.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "At dusk, {{hero}} rests in bed. But at the top of the hill, the digger dug up a big tin chest. What is in the chest?",
+      "scene": "bedroom"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "title": "{{hero}} and the Mystery Seed",
+  "theme_words": [],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} loved helping Grandma in her garden. Every morning, {{hero}} watered the tomatoes and counted the bees. One sunny Saturday, {{hero}} found a tiny golden seed hiding under a leaf.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} wanted to plant the seed and see what it would become. {{hero}} picked the perfect spot near the fence, dug a little hole, and patted the soil down gently. Now {{hero}} just had to wait.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "Days went by, but nothing grew. {{hero}} checked every morning and every evening. Still just dirt! {{hero}} started to wonder if the seed was too small, or if it did not like its new home.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "Grandma smiled and said, \"Some seeds need a little more water and a lot more patience.\" So {{hero}} gave it a drink every day. Then one morning, a bright green sprout poked up!",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "That night, {{hero}} snuggled into bed, tired and happy. Outside, the sprout swayed in the moonlight. But when {{hero}} peeked out the window, the little plant was glowing. What kind of seed was it?",
+      "scene": "bedroom"
+    }
+  ]
+}

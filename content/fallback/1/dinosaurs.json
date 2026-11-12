@@ -1,0 +1,34 @@
+{
+  "title": "{{hero}} and the Dinosaur Egg",
+  "theme_words": [
+    "dinosaur",
+    "egg"
+  ],
+  "pages": [
+    {
+      "n": 1,
+      "text": "{{hero}} has a pet dinosaur. It is big and red. {{hero}} and the big pet nap in the sun. It is fun!",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 2,
+      "text": "{{hero}} can see an egg in the mud. It is big! {{hero}} and the pet dig and dig to get it.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 3,
+      "text": "But the egg is in a pit. {{hero}} can not get it up! {{hero}} and the pet tug and tug. It is not fun.",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 4,
+      "text": "The big pet hops in the pit. {{hero}} sets the egg on top of the pet. Up, up, up! {{hero}} and the pet did it!",
+      "scene": "outdoors-day"
+    },
+    {
+      "n": 5,
+      "text": "The sun is set. {{hero}} and the pet sit in a den. The egg is in a big hat. But tap, tap, tap! What is in the egg?",
+      "scene": "bedroom"
+    }
+  ]
+}
